@@ -1,9 +1,8 @@
-name: Deploy (Hakyll)
+name: Build & Deploy Hakyll
 
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -17,29 +16,20 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Haskell (GHC + Stack)
-        uses: haskell-actions/setup@v2
-        with:
-          enable-stack: true
-          stack-version: "latest"
+      - name: Install Stack
+        run: |
+          curl -sSL https://get.haskellstack.org/ | sh
 
-      - name: Cache Stack
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.stack
-            .stack-work
-          key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml', 'package.yaml', 'site.hs') }}
-
-      - name: Build site generator
-        run: stack build --no-terminal
-
-      - name: Build static site
-        run: stack exec site build
+      - name: Build site
+        run: |
+          stack setup
+          stack build
+          stack exec site build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -51,7 +41,9 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
