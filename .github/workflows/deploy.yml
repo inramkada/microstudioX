@@ -22,7 +22,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # (Opcional pero útil) Caching para acelerar builds de stack
       - name: Cache Stack (global)
         uses: actions/cache@v4
         with:
@@ -50,15 +49,11 @@ jobs:
           stack build
           stack exec site build
 
-      # Asegura que el output existe
       - name: Verify _site output
         run: |
           test -d _site
           ls -la _site | head -200
 
-      # (Opcional pero recomendado) asegurar CNAME en el output
-      # Si ya lo copias desde Hakyll con `match "CNAME"` no hace falta,
-      # pero esto lo deja blindado.
       - name: Ensure CNAME in _site (optional)
         run: |
           if [ -f CNAME ]; then
