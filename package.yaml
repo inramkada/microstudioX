@@ -1,0 +1,16 @@
+name: microstudiox
+version: 0.1.0.0
+github: "youruser/microstudiox"
+license: MIT
+author: "MicrostudioX"
+maintainer: "you@microstudiox.com"
+
+dependencies:
+  - base >= 4.14 && < 5
+  - hakyll
+
+executables:
+  site:
+    main: site.hs
+    ghc-options:
+      - -O2
