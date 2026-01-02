@@ -14,8 +14,9 @@ main = hakyll $ do
     route $ constRoute "index.html"
     compile $ getResourceBody
       >>= relativizeUrls
-      
-  --  (ik)
+
+  -- Ensure CNAME is included in the published site
   match "CNAME" $ do
     route idRoute
     compile copyFileCompiler
+
