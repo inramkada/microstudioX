@@ -1,0 +1,15 @@
+cabal-version:       >=1.10
+name:                microstudioX
+version:             0.1.0.0
+build-type:          Simple
+
+library
+  hs-source-dirs: src
+  exposed-modules:
+      Core.Units
+      Core.Models
+      Core.Calc
+      Core.Trace
+  build-depends:
+      base >=4.14 && <5
+  default-language:  Haskell2010
