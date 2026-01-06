@@ -1,7 +1,0 @@
-resolver: lts-22.33
-
-packages:
-  - .
-
-extra-deps:
-  - hakyll-4.16.5.0
