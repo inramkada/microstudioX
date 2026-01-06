@@ -1,6 +1,0 @@
-src/**/*.html linguist-detectable=false
-templates/**/*.html linguist-detectable=false
-_site/** linguist-detectable=false
-assets/** linguist-detectable=false
-*.css linguist-detectable=false
-*.js linguist-detectable=false
