@@ -84,9 +84,9 @@
     }
 
     header, footer{
-      background:var(--glass);
-      backdrop-filter: blur(var(--blur));
-      -webkit-backdrop-filter: blur(var(--blur));
+      background: rgba(0,0,0,1);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
       overflow: visible;
     }
 
@@ -110,8 +110,8 @@
       text-transform: uppercase;
       white-space: nowrap;
       line-height: 1;
-      opacity:.97;
-      text-shadow: 0 0 10px rgba(255,255,255,.10), 0 0 2px rgba(255,255,255,.18);
+      color: #fff;
+      mix-blend-mode: screen;
     }
 
     nav{
@@ -122,7 +122,7 @@
     }
 
     .navlink{
-      color:rgba(255,255,255,.82);
+      color:#fff;
       text-decoration:none;
       font-size:var(--nav-size);
       font-weight:700;
@@ -130,6 +130,7 @@
       text-transform:uppercase;
       padding:5px 2px;
       position:relative;
+      mix-blend-mode: screen;
     }
     .navlink:hover{ color:rgba(255,255,255,.96); }
     .navlink::after{
@@ -401,10 +402,11 @@
       text-transform:uppercase;
       opacity:.75;
       align-items:center;
+      mix-blend-mode: screen;
     }
 
     .footer-links a{
-      color:rgba(255,255,255,.85);
+      color:#fff;
       text-decoration:none;
     }
     .footer-links a:hover{ color:#fff; }
@@ -416,6 +418,7 @@
       text-align:center;
       line-height:1.3;
       font-weight:400;
+      mix-blend-mode: screen;
     }
 
     .cookie-gear{
@@ -665,36 +668,55 @@
       z-index:-2;
       pointer-events:none;
       overflow:hidden;
+      display: flex; /* Añadido para mejor distribución */
     }
 
     .vl{
-      position:absolute;
-      inset:0;
-      overflow:hidden;
+      position:relative;
+      flex: 1;
+      height: 100%;
+      overflow: hidden;
+      transition: flex 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
     .vl video{
       position:absolute;
-      top:50%; left:50%;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
-      width:auto; height:auto;
-      max-width:none; max-height:none;
-      object-fit:none;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: cover;
       opacity:0;
       transition: opacity 1.6s ease;
     }
-    .vl.is-expanded video{
-      width:33.33vw;
-      height:auto;
-      object-fit:none;
+
+    .vl.is-expanded {
+      flex: 2;
     }
-    .vl.is-on video{ opacity:1; }
 
-    .vl-left  { clip-path: inset(0 66.67% 0 0); }
-    .vl-center{ clip-path: inset(0 33.33% 0 33.33%); }
-    .vl-right { clip-path: inset(0 0 0 66.67%); }
+    /* Carril central: escala real 9:16 sin cropping */
+    #vl-center {
+      flex: 0 0 auto;
+      width: calc(100vh * 9 / 16);
+      max-width: 100%;
+    }
 
-    .vl-left::after,
-    .vl-center::after{
+    #vl-center video {
+      width: 100%;
+      height: 100%;
+      min-width: unset;
+      min-height: unset;
+      object-fit: contain;
+    }
+
+    .vl.is-on video{ 
+      opacity: 1;
+    }
+
+    .vl::after {
       content:"";
       position:absolute;
       top:0; bottom:0;
@@ -702,24 +724,18 @@
       width:1px;
       background: rgba(255,255,255,.06);
       pointer-events:none;
+      z-index: 2;
     }
 
-    #mx-video-bg::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: rgba(0,0,0,.32);
-      pointer-events:none;
-      z-index:1;
-    }
+    /* overlay eliminado — video sin oscurecer */
   </style>
 </head>
 
 <body>
   <div id="mx-video-bg">
-    <div class="vl vl-left" id="vl-left"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
-    <div class="vl vl-center" id="vl-center"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
-    <div class="vl vl-right" id="vl-right"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
+    <div class="vl" id="vl-left"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
+    <div class="vl" id="vl-center"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
+    <div class="vl" id="vl-right"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
   </div>
 
   <div class="page" id="app-root">
@@ -771,7 +787,7 @@
             </div>
           </div>
 
-          <a class="navlink" href="/cdn-cgi/l/email-protection#3a53545c557a5753594855485f4e5b53564214595557" data-i18n="nav.contact">Contact</a>
+          <a class="navlink" href="/cdn-cgi/l/email-protection#b2dad7dededdf2dfdbd1c0ddc1c6c7d6dbddca9cd1dddf" data-i18n="nav.contact">Contact</a>
         </nav>
       </div>
     </header>
@@ -836,8 +852,7 @@
     </div>
   </div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     (function(){
       const cmpEl = document.getElementById("mx-cmp");
       const btnClose = document.getElementById("mx-btn-close");
@@ -1449,13 +1464,14 @@
     })();
 
     (function(){
+      // NOTA: Asegúrate de que estas URLs sean válidas o el video no cargará.
       const BASE = 'https://www.microstudiox.com/assets/';
       const VIDEOS = [BASE+'video1.mp4', BASE+'video2.mp4', BASE+'video3.mp4', BASE+'video4.mp4'];
 
       const LANES = [
         { id: 'vl-left',   delay:    0 },
-        { id: 'vl-center', delay: 1800 },
-        { id: 'vl-right',  delay: 3400 }
+        { id: 'vl-center', delay: 1200 }, // Reducido un poco para mayor fluidez inicial
+        { id: 'vl-right',  delay: 2400 }
       ];
 
       const laneVideo = { 'vl-left': -1, 'vl-center': -1, 'vl-right': -1 };
@@ -1469,7 +1485,7 @@
       }
 
       function randPause() {
-        return 1000 + Math.random() * 3000;
+        return 500 + Math.random() * 2000;
       }
 
       function runLane(laneId) {
@@ -1482,17 +1498,21 @@
         video.src = src;
         video.currentTime = 0;
 
-        if (Math.random() < 0.35) wrap.classList.add('is-expanded');
+        if (Math.random() < 0.4) wrap.classList.add('is-expanded');
         else wrap.classList.remove('is-expanded');
 
         const p = video.play();
-        if (p && p.catch) p.catch(() => {});
+        if (p && p.catch) p.catch(() => {
+            // Manejo de error si el video no existe o el navegador bloquea autoplay
+            console.warn("Video failed to play in " + laneId);
+        });
+        
         wrap.classList.add('is-on');
 
         video.addEventListener('ended', function onEnd() {
           video.removeEventListener('ended', onEnd);
           wrap.classList.remove('is-on');
-          wrap.classList.remove('is-expanded');
+          // No quitamos 'is-expanded' aquí para evitar un salto visual brusco al terminar
           setTimeout(() => runLane(laneId), randPause());
         });
       }
@@ -1501,8 +1521,12 @@
         LANES.forEach(({ id, delay }) => setTimeout(() => runLane(id), delay));
       }
 
-      if (document.readyState === 'complete' || document.readyState === 'interactive') boot();
-      else document.addEventListener('DOMContentLoaded', boot);
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        boot();
+      } else {
+        document.addEventListener('DOMContentLoaded', boot);
+      }
+
     })();
   </script>
 </body>
