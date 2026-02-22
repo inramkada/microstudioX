@@ -193,7 +193,6 @@
       padding:2px 0;
     }
 
-    /* ✅ Microajuste (1): subir ligeramente tamaño del dropdown */
     .v-main{
       color:rgba(255,255,255,.92);
       font-size:13px;
@@ -520,9 +519,7 @@
     html[dir="rtl"], body{ overflow-x: hidden; }
     [dir="rtl"] .page{ overflow-x: clip; }
 
-    /* ─────────────────────────────────────────────────────────────
-       ✅ Microajuste (4): CMP simplificado (informativo, sin lock)
-       ───────────────────────────────────────────────────────────── */
+
     .mx-cmp{
       position:fixed;
       inset:0;
@@ -662,52 +659,46 @@
       .mx-cmp-row{ flex-direction:column; align-items:flex-start; }
     }
 
-    /* ─────────────────────────────────────────────────────────────
-       ✅ Video Background: lanes rellenos al 100% (laterales incluidos)
-       ───────────────────────────────────────────────────────────── */
     #mx-video-bg{
       position:fixed;
       inset:0;
       z-index:-2;
       pointer-events:none;
       overflow:hidden;
+      display: flex; /* Añadido para mejor distribución */
     }
 
     .vl{
-      position:absolute;
-      inset:0;
-      overflow:hidden;
+      position:relative; /* Cambiado de absolute para usar flexbox */
+      flex: 1; /* Distribución equitativa */
+      height: 100%;
+      overflow: hidden;
+      transition: flex 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* ✅ Base: SIEMPRE rellena el lane completo */
     .vl video{
       position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      object-position:center;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: cover; /* Cambiado de 'none' para que rellene el carril */
       opacity:0;
       transition: opacity 1.6s ease;
     }
 
-    /* Opcional: laterales “más laterales” (muestran bordes) */
-    .vl-left  video{ object-position:left center; }
-    .vl-right video{ object-position:right center; }
+    .vl.is-expanded {
+      flex: 2; /* Aumenta el ancho del carril cuando está activo */
+    }
 
-    .vl.is-on video{ opacity:1; }
+    .vl.is-on video{ 
+      opacity: 0.45; /* Ajustado ligeramente la opacidad para que no opaque el contenido */
+    }
 
-    /* Se mantiene para tu gesto JS, aunque ya no hace falta tocar tamaños */
-    .vl.is-expanded video{ object-position:center; }
-
-    /* Clip each lane to its third of the screen */
-    .vl-left  { clip-path: inset(0 66.67% 0 0); }
-    .vl-center{ clip-path: inset(0 33.33% 0 33.33%); }
-    .vl-right { clip-path: inset(0 0 0 66.67%); }
-
-    /* Subtle seam lines between lanes */
-    .vl-left::after,
-    .vl-center::after{
+    .vl::after {
       content:"";
       position:absolute;
       top:0; bottom:0;
@@ -715,9 +706,9 @@
       width:1px;
       background: rgba(255,255,255,.06);
       pointer-events:none;
+      z-index: 2;
     }
 
-    /* ✅ Microajuste (2): overlay un poco más presente */
     #mx-video-bg::before{
       content:"";
       position:absolute;
@@ -730,11 +721,10 @@
 </head>
 
 <body>
-  <!-- Video background: 3 independent lanes -->
   <div id="mx-video-bg">
-    <div class="vl vl-left" id="vl-left"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
-    <div class="vl vl-center" id="vl-center"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
-    <div class="vl vl-right" id="vl-right"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
+    <div class="vl" id="vl-left"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
+    <div class="vl" id="vl-center"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
+    <div class="vl" id="vl-right"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
   </div>
 
   <div class="page" id="app-root">
@@ -786,7 +776,7 @@
             </div>
           </div>
 
-          <a class="navlink" href="/cdn-cgi/l/email-protection#3a53545c557a5753594855485f4e5b53564214595557" data-i18n="nav.contact">Contact</a>
+          <a class="navlink" href="mailto:hello@microstudiox.com" data-i18n="nav.contact">Contact</a>
         </nav>
       </div>
     </header>
@@ -796,11 +786,11 @@
     <footer>
       <div class="footer-inner">
         <div class="footer-links">
-          <a href="terms.html" data-i18n="footer.terms">Terms</a>
-          <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
+          <a href="index.html" data-i18n="footer.terms">Terms</a>
+          <a href="index.html" data-i18n="footer.privacy">Privacy</a>
 
           <span style="display:inline-flex; align-items:center;">
-            <a href="cookies.html" data-i18n="footer.cookies">Cookies</a>
+            <a href="index.html" data-i18n="footer.cookies">Cookies</a>
             <button
               type="button"
               class="cookie-gear"
@@ -814,7 +804,7 @@
             </button>
           </span>
 
-          <a href="legal.html" data-i18n="footer.legal">Legal</a>
+          <a href="index.html" data-i18n="footer.legal">Legal</a>
         </div>
 
         <div class="copyright">
@@ -824,7 +814,6 @@
     </footer>
   </div>
 
-  <!-- ✅ CMP simplificado (informativo). Se abre SOLO con la rueda. -->
   <div class="mx-cmp" id="mx-cmp" role="dialog" aria-modal="true" aria-labelledby="mx-cmp-title">
     <div class="mx-cmp-panel">
       <div class="mx-cmp-head">
@@ -852,9 +841,7 @@
     </div>
   </div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
   <script>
-    /* ✅ Microajuste (4): CMP simplificado (sin decisiones, sin bloqueo) */
     (function(){
       const cmpEl = document.getElementById("mx-cmp");
       const btnClose = document.getElementById("mx-btn-close");
@@ -894,13 +881,11 @@
         en: {
           "nav.about": "About",
           "nav.services": "Services",
-          "nav.verticals": "Verticals",
           "nav.contact": "Contact",
           "footer.terms": "Terms",
           "footer.privacy": "Privacy",
           "footer.cookies": "Cookies",
           "footer.legal": "Legal",
-          "card.test": "We’re working on it — coming back soon.",
           "cookie.prefs": "Cookie Preferences",
           "cmp.title": "Privacy & Cookies",
           "cmp.desc": "We respect your privacy. This site does not use advertising or tracking cookies. Only minimal technical storage may be used for security and core functionality (e.g., language preferences).",
@@ -910,13 +895,11 @@
         },
         zh: {
           "nav.about": "关于",
-          "nav.verticals": "领域",
           "nav.contact": "联系",
           "footer.terms": "条款",
           "footer.privacy": "隐私",
           "footer.cookies": "Cookies",
           "footer.legal": "法律",
-          "card.test": "我们正在建设中，敬请期待。",
           "cookie.prefs": "Cookie 偏好设置",
           "cmp.title": "隐私与 Cookies",
           "cmp.desc": "我们尊重您的隐私。本网站不使用广告或追踪 Cookies。仅会使用用于安全与核心功能的最少技术性存储（例如语言偏好）。",
@@ -925,14 +908,13 @@
           "cmp.close": "关闭"
         },
         es: {
-          "nav.about": "Info",
+          "nav.about": "Sobre nosotros",
           "nav.services": "Servicios",
           "nav.contact": "Contacto",
           "footer.terms": "Términos",
           "footer.privacy": "Privacidad",
           "footer.cookies": "Cookies",
           "footer.legal": "Legal",
-          "card.test": "Estamos trabajando — volvemos pronto.",
           "cookie.prefs": "Preferencias de cookies",
           "cmp.title": "Privacidad y cookies",
           "cmp.desc": "Respetamos su privacidad. Este sitio no utiliza cookies publicitarias ni de seguimiento. Solo puede usarse almacenamiento técnico mínimo para seguridad y funcionamiento básico (p. ej., preferencias de idioma).",
@@ -941,7 +923,7 @@
           "cmp.close": "Cerrar"
         },
         ca: {
-          "nav.about": "Info",
+          "nav.about": "Sobre nosaltres",
           "nav.services": "Serveis",
           "nav.contact": "Contacte",
           "footer.terms": "Termes",
@@ -958,7 +940,7 @@
         },
         eu: {
           "nav.about": "Honi buruz",
-          "nav.services": "Zerbitzuak",
+          "nav.services": "Services",
           "nav.contact": "Kontaktua",
           "footer.terms": "Bald.",
           "footer.privacy": "Prib.",
@@ -990,7 +972,7 @@
         },
         ar: {
           "nav.about": "حول",
-          "nav.services": "الخدمات",
+          "nav.verticals": "القطاعات",
           "nav.contact": "تواصل",
           "footer.terms": "الشروط",
           "footer.privacy": "الخصوصية",
@@ -1006,7 +988,7 @@
         },
         ru: {
           "nav.about": "О нас",
-          "nav.services": "Услуги",
+          "nav.verticals": "Вертикали",
           "nav.contact": "Контакты",
           "footer.terms": "Усл.",
           "footer.privacy": "Конф.",
@@ -1022,7 +1004,7 @@
         },
         hi: {
           "nav.about": "परिचय",
-          "nav.services": "सेवाएँ",
+          "nav.verticals": "वर्टिकल्स",
           "nav.contact": "संपर्क",
           "footer.terms": "शर्तें",
           "footer.privacy": "गोपनीयता",
@@ -1059,8 +1041,10 @@
       function getLang(){
         const saved = localStorage.getItem(storageKey);
         if (saved && I18N[saved]) return saved;
+
         const detected = detectBrowserLang();
         if (detected) return detected;
+
         return DEFAULT_LANG;
       }
 
@@ -1468,15 +1452,15 @@
       });
     })();
 
-    /* ── Video Background: 3 independent async lanes, 4 videos ── */
     (function(){
+      // NOTA: Asegúrate de que estas URLs sean válidas o el video no cargará.
       const BASE = 'https://www.microstudiox.com/assets/';
       const VIDEOS = [BASE+'video1.mp4', BASE+'video2.mp4', BASE+'video3.mp4', BASE+'video4.mp4'];
 
       const LANES = [
         { id: 'vl-left',   delay:    0 },
-        { id: 'vl-center', delay: 1800 },
-        { id: 'vl-right',  delay: 3400 }
+        { id: 'vl-center', delay: 1200 }, // Reducido un poco para mayor fluidez inicial
+        { id: 'vl-right',  delay: 2400 }
       ];
 
       const laneVideo = { 'vl-left': -1, 'vl-center': -1, 'vl-right': -1 };
@@ -1490,7 +1474,7 @@
       }
 
       function randPause() {
-        return 1000 + Math.random() * 3000;
+        return 500 + Math.random() * 2000;
       }
 
       function runLane(laneId) {
@@ -1503,17 +1487,21 @@
         video.src = src;
         video.currentTime = 0;
 
-        if (Math.random() < 0.35) wrap.classList.add('is-expanded');
+        if (Math.random() < 0.4) wrap.classList.add('is-expanded');
         else wrap.classList.remove('is-expanded');
 
         const p = video.play();
-        if (p && p.catch) p.catch(() => {});
+        if (p && p.catch) p.catch(() => {
+            // Manejo de error si el video no existe o el navegador bloquea autoplay
+            console.warn("Video failed to play in " + laneId);
+        });
+        
         wrap.classList.add('is-on');
 
         video.addEventListener('ended', function onEnd() {
           video.removeEventListener('ended', onEnd);
           wrap.classList.remove('is-on');
-          wrap.classList.remove('is-expanded');
+          // No quitamos 'is-expanded' aquí para evitar un salto visual brusco al terminar
           setTimeout(() => runLane(laneId), randPause());
         });
       }
