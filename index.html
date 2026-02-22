@@ -705,10 +705,59 @@
       .mx-btn{ flex:1 1 auto; text-align:center; }
       .mx-cmp-row{ flex-direction:column; align-items:flex-start; }
     }
+    /* ── Video Background ── */
+    #mx-video-bg{
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      pointer-events:none;
+      overflow:hidden;
+    }
+
+    #mx-video-bg video{
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      object-fit:cover;
+      opacity:0;
+      transition: opacity 1.4s ease;
+    }
+
+    /* clip masks for the 3 thirds */
+    #mx-video-bg.show-center video {
+      clip-path: inset(0 33.33% 0 33.33%);
+      opacity:1;
+    }
+    #mx-video-bg.show-left video {
+      clip-path: inset(0 66.66% 0 0);
+      opacity:1;
+    }
+    #mx-video-bg.show-right video {
+      clip-path: inset(0 0 0 66.66%);
+      opacity:1;
+    }
+
+    #mx-video-bg video::before{ content:none; }
+
+    /* dark overlay so text stays readable */
+    #mx-video-bg::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: rgba(0,0,0,.52);
+      pointer-events:none;
+    }
+
   </style>
 </head>
 
 <body>
+  <!-- Video background -->
+  <div id="mx-video-bg">
+    <video id="mx-bg-video" src="https://www.microstudiox.com/assets/video1.mp4"
+           muted playsinline loop preload="auto" aria-hidden="true"></video>
+  </div>
+
   <div class="page" id="app-root">
     <header id="mx-header">
       <div class="topbar">
@@ -993,6 +1042,7 @@
       const I18N = {
         en: {
           "nav.about": "About",
+          "nav.services": "Services",
           "nav.verticals": "Verticals",
           "nav.contact": "Contact",
           "footer.terms": "Terms",
@@ -1600,7 +1650,7 @@
     })();
 
     (function(){
-    const v = document.getElementById('services');
+      const v = document.getElementById('services');
       if (!v) return;
 
       function setOpen(isOpen){
@@ -1609,18 +1659,65 @@
       }
       function isOpen(){ return v.classList.contains('is-open'); }
 
+      // Toggle on click of the trigger (not on link clicks inside menu)
       v.addEventListener('click', (e) => {
         const a = e.target.closest('a');
-        if (a) return;
+        if (a) return; // let link navigate normally
         e.preventDefault();
         e.stopPropagation();
         setOpen(!isOpen());
       });
 
-      document.addEventListener('click', (e) => {
+      // Close when clicking outside — but use pointerdown so it fires before click
+      document.addEventListener('pointerdown', (e) => {
         if (!v.contains(e.target)) setOpen(false);
       });
 
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') setOpen(false);
-      })
+      });
+    })();
+
+    /* ── Video Background: 3-thirds cycle every 23s ── */
+    (function(){
+      const wrap  = document.getElementById('mx-video-bg');
+      const video = document.getElementById('mx-bg-video');
+      if (!wrap || !video) return;
+
+      // sequence: center → left → right → center → ...
+      const THIRDS  = ['show-center', 'show-left', 'show-right'];
+      const INTERVAL = 23000; // ms
+      let   step     = 0;
+
+      function showThird(idx){
+        // Remove all third classes, add the new one
+        wrap.classList.remove('show-center', 'show-left', 'show-right');
+        void wrap.offsetWidth; // force reflow so CSS transition restarts
+        wrap.classList.add(THIRDS[idx % THIRDS.length]);
+      }
+
+      // Start video then begin the cycle
+      const tryPlay = () => {
+        const p = video.play();
+        if (p && p.catch) p.catch(() => {});
+      };
+
+      if (document.readyState === 'complete' || document.readyState === 'interactive'){
+        tryPlay();
+      } else {
+        document.addEventListener('DOMContentLoaded', tryPlay);
+      }
+
+      // First appearance: center
+      showThird(step);
+
+      // Rotate every 23 seconds
+      setInterval(() => {
+        step++;
+        showThird(step);
+      }, INTERVAL);
+    })();
+
+  </script>
+</body>
+</html>
