@@ -145,15 +145,15 @@
     }
     .navlink:hover::after{ transform:scaleX(1); }
 
-    .verticals{
+    .services{
       position:relative;
       display:inline-flex;
       align-items:center;
       cursor:pointer;
     }
-    .verticals > span{ pointer-events:none; }
+    .services > span{ pointer-events:none; }
 
-    .verticals-menu{
+    .services-menu{
       position:absolute;
       top:100%;
       left:0;
@@ -178,9 +178,9 @@
       z-index:50;
     }
 
-    .verticals-menu .v-item:first-child{ margin-top:2px; }
+    .services-menu .v-item:first-child{ margin-top:2px; }
 
-    .verticals.is-open .verticals-menu{
+    .services.is-open .services-menu{
       opacity:1;
       pointer-events:auto;
       transform: translateY(0);
@@ -501,7 +501,7 @@
     [dir="rtl"] .navlink::after{ transform-origin:right; }
     [dir="rtl"] .footer-links{ flex-direction:row-reverse; }
 
-    [dir="rtl"] .verticals-menu{
+    [dir="rtl"] .services-menu{
       left:auto;
       right:0;
       align-items:flex-end;
@@ -740,16 +740,22 @@
 
           <a class="navlink" href="#/about" data-i18n="nav.about">About</a>
 
-          <div class="navlink verticals" id="verticals" role="button" aria-haspopup="true" aria-expanded="false">
-            <span data-i18n="nav.verticals">Verticals</span>
-            <div class="verticals-menu" aria-label="Verticals">
-              <a class="v-item" href="https://www.microretailx.com">
-                <span class="v-main">HOLDING</span>
-                <span class="v-sub">MICRORETAILX</span>
+          <div class="navlink services" id="services" role="button" aria-haspopup="true" aria-expanded="false">
+            <span data-i18n="nav.services">Services</span>
+            <div class="services-menu" aria-label="Services">
+              <a class="v-item" href="https://www.microstudiox.com/web">
+                <span class="v-main">DIGITAL PLATFORMS</span>
+                <span class="v-sub">WEB DESIGN</span>
               </a>
               <a class="v-item" href="https://www.microlabsx.com">
-                <span class="v-main">BIOTECH</span>
-                <span class="v-sub">MICROLABSX</span>
+                <span class="v-main">AI DRIVEN MEDIA</span>
+                <span class="v-sub">MODELS</span>
+              </a>
+                <a class="v-item" href="https://www.microlabsx.com">
+                <span class="v-main">DIGITAL ID SYSTEMS</span>
+                <span class="v-sub">MODELS</span>
+                <span class="v-sub">VECTOR TRACK</span>
+                <span class="v-sub">TRACKER 01</span>
               </a>
             </div>
           </div>
