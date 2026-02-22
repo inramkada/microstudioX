@@ -84,10 +84,10 @@
     }
 
     header, footer{
-      background: #000;
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
       overflow: visible;
-      position: relative;
-      z-index: 10;
     }
 
     header{
@@ -100,7 +100,7 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      mix-blend-mode: screen;
+      mix-blend-mode:difference;
       isolation:isolate;
       transform: translateZ(0);
     }
@@ -145,7 +145,32 @@
       z-index:2;
     }
 
-    .brand, .navlink{ color: #fff; }
+    .brand, .navlink{
+      position:relative;
+      z-index:2;
+      color: rgba(255,255,255,.92);
+    }
+
+    .brand::before,
+    .navlink::before{
+      content: attr(data-text);
+      position:absolute;
+      inset:0;
+      text-shadow:
+        -0.6px 0 rgba(255,70,95,.35),
+         0.6px 0 rgba(80,210,255,.28);
+      mix-blend-mode: normal;
+      opacity:.9;
+      pointer-events:none;
+      white-space: nowrap;
+    }
+
+    .navlink:hover::before{
+      text-shadow:
+        -1.2px 0 rgba(255,70,95,.50),
+         1.2px 0 rgba(80,210,255,.42);
+      opacity:1;
+    }
 
     .navlink::after{
       content:"";
@@ -404,7 +429,7 @@
       flex-direction:column;
       align-items:center;
       gap:6px;
-      mix-blend-mode: screen;
+      mix-blend-mode:difference;
       isolation:isolate;
       transform: translateZ(0);
     }
@@ -680,10 +705,10 @@
     #mx-video-bg{
       position:fixed;
       inset:0;
-      z-index:0;
+      z-index:-2;
       pointer-events:none;
       overflow:hidden;
-      display: flex;
+      display: flex; /* Añadido para mejor distribución */
     }
 
     .vl{
@@ -756,7 +781,7 @@
   <div class="page" id="app-root">
     <header id="mx-header">
       <div class="topbar">
-        <div class="brand" data-text="microstudioX">microstudio<span style="text-transform:uppercase">X</span></div>
+        <div class="brand" data-text="MICROSTUDIOX">microstudio<span style="text-transform:uppercase">X</span></div>
 
         <nav>
           <div class="lang-switch" id="lang-switch">
