@@ -1503,4 +1503,13 @@
         LANES.forEach(({ id, delay }) => setTimeout(() => runLane(id), delay));
       }
 
-      if (document.readyState === 'complete'
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        boot();
+      } else {
+        document.addEventListener('DOMContentLoaded', boot);
+      }
+
+    })();
+  </script>
+</body>
+</html>
