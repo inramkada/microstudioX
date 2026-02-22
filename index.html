@@ -101,6 +101,7 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
+      mix-blend-mode:difference;
     }
 
     .brand{
@@ -112,7 +113,6 @@
       line-height: 1;
       opacity:.97;
       text-shadow: 0 0 10px rgba(255,255,255,.10), 0 0 2px rgba(255,255,255,.18);
-      mix-blend-mode:difference;
     }
 
     nav{
@@ -755,7 +755,7 @@
   <!-- Video background -->
   <div id="mx-video-bg">
     <video id="mx-bg-video" src="https://www.microstudiox.com/assets/video1.mp4"
-           muted playsinline loop preload="auto" aria-hidden="true"></video>
+           muted playsinline preload="auto" aria-hidden="true"></video>
   </div>
 
   <div class="page" id="app-root">
@@ -845,7 +845,7 @@
         </div>
 
         <div class="copyright">
-          © 2025 microstudioX — MICRORETAILX LLC
+          © 2025 MICROSTUDIOX — MICRORETAILX LLC
         </div>
       </div>
     </footer>
@@ -1678,44 +1678,52 @@
       });
     })();
 
-    /* ── Video Background: 3-thirds cycle every 23s ── */
+    /* ── Video Background: full duration, 3s black, random third ── */
     (function(){
       const wrap  = document.getElementById('mx-video-bg');
       const video = document.getElementById('mx-bg-video');
       if (!wrap || !video) return;
 
-      // sequence: center → left → right → center → ...
-      const THIRDS  = ['show-center', 'show-left', 'show-right'];
-      const INTERVAL = 23000; // ms
-      let   step     = 0;
+      const THIRDS = ['show-center', 'show-left', 'show-right'];
+      let lastThird = -1;
+
+      function randomThird(){
+        // Never repeat the same third twice in a row
+        let idx;
+        do { idx = Math.floor(Math.random() * THIRDS.length); } while (idx === lastThird);
+        lastThird = idx;
+        return idx;
+      }
 
       function showThird(idx){
-        // Remove all third classes, add the new one
-        wrap.classList.remove('show-center', 'show-left', 'show-right');
-        void wrap.offsetWidth; // force reflow so CSS transition restarts
-        wrap.classList.add(THIRDS[idx % THIRDS.length]);
+        wrap.classList.remove('show-center','show-left','show-right');
+        void wrap.offsetWidth;
+        wrap.classList.add(THIRDS[idx]);
       }
 
-      // Start video then begin the cycle
-      const tryPlay = () => {
+      function hideVideo(){
+        wrap.classList.remove('show-center','show-left','show-right');
+      }
+
+      function launch(){
+        video.currentTime = 0;
         const p = video.play();
-        if (p && p.catch) p.catch(() => {});
-      };
-
-      if (document.readyState === 'complete' || document.readyState === 'interactive'){
-        tryPlay();
-      } else {
-        document.addEventListener('DOMContentLoaded', tryPlay);
+        if (p && p.catch) p.catch(()=>{});
+        showThird(randomThird());
       }
 
-      // First appearance: center
-      showThird(step);
+      // When video ends: hide → 3s pause → show new third from start
+      video.addEventListener('ended', function(){
+        hideVideo();
+        setTimeout(launch, 3000);
+      });
 
-      // Rotate every 23 seconds
-      setInterval(() => {
-        step++;
-        showThird(step);
-      }, INTERVAL);
+      // Boot
+      if (document.readyState === 'complete' || document.readyState === 'interactive'){
+        launch();
+      } else {
+        document.addEventListener('DOMContentLoaded', launch);
+      }
     })();
 
   </script>
