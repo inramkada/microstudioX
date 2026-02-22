@@ -193,9 +193,10 @@
       padding:2px 0;
     }
 
+    /* ✅ Microajuste (1): subir ligeramente tamaño del dropdown */
     .v-main{
       color:rgba(255,255,255,.92);
-      font-size:12px;
+      font-size:13px;
       font-weight:400;
       letter-spacing:.14em;
       text-transform:uppercase;
@@ -205,7 +206,7 @@
     .v-sub{
       margin-top:3px;
       color:rgba(255,255,255,.55);
-      font-size:10px;
+      font-size:10.5px;
       font-weight:400;
       letter-spacing:.18em;
       text-transform:uppercase;
@@ -519,17 +520,9 @@
     html[dir="rtl"], body{ overflow-x: hidden; }
     [dir="rtl"] .page{ overflow-x: clip; }
 
-    body.mx-consent-locked{
-      overflow:hidden;
-      touch-action:none;
-    }
-
-    body.mx-consent-locked #app-root{
-      pointer-events:none;
-      user-select:none;
-      -webkit-user-select:none;
-    }
-
+    /* ─────────────────────────────────────────────────────────────
+       ✅ Microajuste (4): CMP simplificado (informativo, sin lock)
+       ───────────────────────────────────────────────────────────── */
     .mx-cmp{
       position:fixed;
       inset:0;
@@ -539,7 +532,7 @@
       justify-content:center;
       padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right))
                max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
-      background: rgba(0,0,0,.78);
+      background: rgba(0,0,0,.62);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
@@ -615,35 +608,23 @@
       border:1px solid rgba(255,255,255,.16);
       background: rgba(0,0,0,.35);
       position:relative;
-      cursor:pointer;
       flex:0 0 auto;
       padding:0;
+      cursor:default;
+      opacity:.70;
     }
 
     .mx-switch::after{
       content:"";
       position:absolute;
       top:50%;
-      left:3px;
+      left:23px;
       width:18px;
       height:18px;
       transform: translateY(-50%);
       border-radius: 999px;
       background: rgba(255,255,255,.78);
-      transition: left 150ms ease, opacity 150ms ease;
       opacity:.92;
-    }
-
-    .mx-switch[data-on="1"]{
-      background: rgba(255,255,255,.08);
-      border-color: rgba(255,255,255,.22);
-    }
-
-    .mx-switch[data-on="1"]::after{ left:23px; }
-
-    .mx-switch[aria-disabled="true"]{
-      cursor:not-allowed;
-      opacity:.55;
     }
 
     .mx-cmp-actions{
@@ -675,21 +656,12 @@
       color:#fff;
     }
 
-    .mx-btn.primary{
-      background: rgba(255,255,255,.10);
-      border-color: rgba(255,255,255,.22);
-    }
-
-    .mx-btn.primary:hover{
-      background: rgba(255,255,255,.14);
-      border-color: rgba(255,255,255,.28);
-    }
-
     @media (max-width: 560px){
       .mx-cmp-actions{ justify-content:stretch; }
       .mx-btn{ flex:1 1 auto; text-align:center; }
       .mx-cmp-row{ flex-direction:column; align-items:flex-start; }
     }
+
     /* ── Video Background: 3 independent lanes ── */
     #mx-video-bg{
       position:fixed;
@@ -699,7 +671,6 @@
       overflow:hidden;
     }
 
-    /* Each lane covers full viewport, clipped to its third */
     .vl{
       position:absolute;
       inset:0;
@@ -715,7 +686,6 @@
       opacity:0;
       transition: opacity 1.6s ease;
     }
-    /* Expanded: fill the lane's full width while keeping natural video height */
     .vl.is-expanded video{
       width:33.33vw;
       height:auto;
@@ -723,12 +693,10 @@
     }
     .vl.is-on video{ opacity:1; }
 
-    /* Clip each lane to its third of the screen */
     .vl-left  { clip-path: inset(0 66.67% 0 0); }
     .vl-center{ clip-path: inset(0 33.33% 0 33.33%); }
     .vl-right { clip-path: inset(0 0 0 66.67%); }
 
-    /* Subtle seam lines between lanes */
     .vl-left::after,
     .vl-center::after{
       content:"";
@@ -740,16 +708,15 @@
       pointer-events:none;
     }
 
-    /* dark overlay */
+    /* ✅ Microajuste (2): overlay un poco más presente para domesticar el fondo */
     #mx-video-bg::before{
       content:"";
       position:absolute;
       inset:0;
-      background: rgba(0,0,0,.22);
+      background: rgba(0,0,0,.32);
       pointer-events:none;
       z-index:1;
     }
-
   </style>
 </head>
 
@@ -803,7 +770,7 @@
                 <span class="v-main">AI DRIVEN MEDIA</span>
                 <span class="v-sub">MODELS</span>
               </a>
-                <a class="v-item" href="https://www.microstudiox.com">
+              <a class="v-item" href="https://www.microstudiox.com">
                 <span class="v-main">DIGITAL ID SYSTEMS</span>
                 <span class="v-sub">VECTOR TRACK</span>
               </a>
@@ -848,191 +815,70 @@
     </footer>
   </div>
 
+  <!-- ✅ CMP simplificado (informativo). Se abre SOLO con la rueda. -->
   <div class="mx-cmp" id="mx-cmp" role="dialog" aria-modal="true" aria-labelledby="mx-cmp-title">
     <div class="mx-cmp-panel">
       <div class="mx-cmp-head">
         <h2 class="mx-cmp-title" id="mx-cmp-title" data-i18n="cmp.title">Privacy & Cookies</h2>
-        <p class="mx-cmp-sub" id="mx-cmp-desc" data-i18n="cmp.desc">We respect your privacy. This site does not use advertising or tracking cookies. Necessary cookies are always on for security and basic functionality. You can accept or reject optional cookies.</p>
+        <p class="mx-cmp-sub" id="mx-cmp-desc" data-i18n="cmp.desc">
+          We respect your privacy. This site does not use advertising or tracking cookies. Only minimal technical storage may be used for security and core functionality (e.g., language preferences).
+        </p>
       </div>
 
       <div class="mx-cmp-body">
         <div class="mx-cmp-row">
           <div>
-            <strong data-i18n="cmp.necessary">Necessary</strong>
-            <p data-i18n="cmp.necessary.desc">Security & core functionality.</p>
+            <strong data-i18n="cmp.necessary">Technical</strong>
+            <p data-i18n="cmp.necessary.desc">Security & core functionality (always on).</p>
           </div>
           <div>
-            <div class="mx-switch" id="mx-tg-necessary" data-on="1" aria-disabled="true" aria-label="Necessary cookies"></div>
-          </div>
-        </div>
-
-        <div class="mx-cmp-row">
-          <div>
-            <strong data-i18n="cmp.analytics">Analytics</strong>
-            <p data-i18n="cmp.analytics.desc">Optional, anonymous usage insights to improve the site.</p>
-          </div>
-          <div>
-            <button class="mx-switch" id="mx-tg-analytics" type="button" data-on="0" aria-label="Analytics cookies"></button>
-          </div>
-        </div>
-
-        <div class="mx-cmp-row">
-          <div>
-            <strong data-i18n="cmp.marketing">Marketing</strong>
-            <p data-i18n="cmp.marketing.desc">Optional personalization and campaign measurement.</p>
-          </div>
-          <div>
-            <button class="mx-switch" id="mx-tg-marketing" type="button" data-on="0" aria-label="Marketing cookies"></button>
+            <div class="mx-switch" aria-label="Technical storage (always on)"></div>
           </div>
         </div>
       </div>
 
       <div class="mx-cmp-actions">
-        <button class="mx-btn" id="mx-btn-reject" type="button" data-i18n="cmp.reject">Reject all</button>
-        <button class="mx-btn primary" id="mx-btn-accept" type="button" data-i18n="cmp.accept">Accept all</button>
-        <button class="mx-btn" id="mx-btn-save" type="button" data-i18n="cmp.save">Save preferences</button>
+        <button class="mx-btn" id="mx-btn-close" type="button" data-i18n="cmp.close">Close</button>
       </div>
     </div>
   </div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+  <script>
+    /* ✅ Microajuste (4): CMP simplificado (sin decisiones, sin bloqueo) */
     (function(){
-      const CONSENT_KEY = "mx_consent";
-      const CMP_VER = 1;
-
       const cmpEl = document.getElementById("mx-cmp");
-      const appRoot = document.getElementById("app-root");
+      const btnClose = document.getElementById("mx-btn-close");
+      const gear = document.getElementById("cookiePreferencesGear");
 
-      const tgAnalytics = document.getElementById("mx-tg-analytics");
-      const tgMarketing = document.getElementById("mx-tg-marketing");
-
-      const btnAccept = document.getElementById("mx-btn-accept");
-      const btnReject = document.getElementById("mx-btn-reject");
-      const btnSave   = document.getElementById("mx-btn-save");
-
-      function safeParse(json){
-        try{ return JSON.parse(json); } catch(_){ return null; }
-      }
-
-      function readConsent(){
-        const v = localStorage.getItem(CONSENT_KEY);
-        const obj = safeParse(v);
-        if (!obj || typeof obj !== "object") return null;
-        if (obj.v !== CMP_VER) return null;
-        if (!obj.choices || typeof obj.choices !== "object") return null;
-        return obj;
-      }
-
-      function writeConsent(choices){
-        const payload = {
-          v: CMP_VER,
-          ts: Date.now(),
-          choices: {
-            necessary: true,
-            analytics: !!choices.analytics,
-            marketing: !!choices.marketing
-          }
-        };
-        localStorage.setItem(CONSENT_KEY, JSON.stringify(payload));
-        return payload;
-      }
-
-      function isDecided(){ return !!readConsent(); }
-
-      function lockUI(){
-        document.body.classList.add("mx-consent-locked");
-        if (appRoot) appRoot.setAttribute("aria-hidden", "true");
-      }
-
-      function unlockUI(){
-        document.body.classList.remove("mx-consent-locked");
-        if (appRoot) appRoot.removeAttribute("aria-hidden");
-      }
-
-      function setToggle(btn, on){
-        if (!btn) return;
-        btn.setAttribute("data-on", on ? "1" : "0");
-      }
-
-      function getToggle(btn){
-        if (!btn) return 0;
-        return btn.getAttribute("data-on") === "1" ? 1 : 0;
-      }
-
-      function toggle(btn){
-        const on = getToggle(btn);
-        setToggle(btn, on ? 0 : 1);
-      }
-
-      function openCMP(forceLock){
+      function openCMP(){
         if (!cmpEl) return;
-
-        const existing = readConsent();
-        setToggle(tgAnalytics, existing?.choices?.analytics ? 1 : 0);
-        setToggle(tgMarketing, existing?.choices?.marketing ? 1 : 0);
-
         cmpEl.classList.add("is-open");
-        if (forceLock) lockUI();
-        else unlockUI();
       }
 
       function closeCMP(){
         if (!cmpEl) return;
         cmpEl.classList.remove("is-open");
-        unlockUI();
       }
 
-      function acceptAll(){
-        writeConsent({ analytics:true, marketing:true });
-        closeCMP();
-      }
-
-      function rejectAll(){
-        writeConsent({ analytics:false, marketing:false });
-        closeCMP();
-      }
-
-      function savePrefs(){
-        writeConsent({
-          analytics: !!getToggle(tgAnalytics),
-          marketing: !!getToggle(tgMarketing)
-        });
-        closeCMP();
-      }
-
-      tgAnalytics?.addEventListener("click", (e) => { e.preventDefault(); toggle(tgAnalytics); });
-      tgMarketing?.addEventListener("click", (e) => { e.preventDefault(); toggle(tgMarketing); });
-
-      btnAccept?.addEventListener("click", (e) => { e.preventDefault(); acceptAll(); });
-      btnReject?.addEventListener("click", (e) => { e.preventDefault(); rejectAll(); });
-      btnSave?.addEventListener("click", (e) => { e.preventDefault(); savePrefs(); });
-
-      const gear = document.getElementById("cookiePreferencesGear");
       gear?.addEventListener("click", (e) => {
         e.preventDefault();
-        openCMP(false);
+        openCMP();
+      });
+
+      btnClose?.addEventListener("click", (e) => {
+        e.preventDefault();
+        closeCMP();
       });
 
       document.addEventListener("keydown", (e) => {
-        if (e.key !== "Escape") return;
-        if (!isDecided() && cmpEl?.classList.contains("is-open")) return;
-        if (cmpEl?.classList.contains("is-open")) closeCMP();
+        if (e.key === "Escape" && cmpEl?.classList.contains("is-open")) closeCMP();
       });
 
-      window.__mxConsent = {
-        isDecided,
-        getConsent: () => readConsent(),
-        open: () => openCMP(false),
-        openLocked: () => openCMP(true),
-        acceptAll,
-        rejectAll,
-        savePrefs,
-        reset: () => { localStorage.removeItem(CONSENT_KEY); openCMP(true); }
-      };
-
-      if (!isDecided()){
-        openCMP(true);
-      }
+      // Close on backdrop click (click outside panel)
+      cmpEl?.addEventListener("pointerdown", (e) => {
+        if (e.target === cmpEl) closeCMP();
+      });
     })();
 
     (function(){
@@ -1049,16 +895,10 @@
           "card.test": "We’re working on it — coming back soon.",
           "cookie.prefs": "Cookie Preferences",
           "cmp.title": "Privacy & Cookies",
-          "cmp.desc": "We respect your privacy. This site does not use advertising or tracking cookies. Necessary cookies are always on for security and basic functionality. You can accept or reject optional cookies.",
-          "cmp.necessary": "Necessary",
-          "cmp.necessary.desc": "Security & core functionality.",
-          "cmp.analytics": "Analytics",
-          "cmp.analytics.desc": "Optional, anonymous usage insights to improve the site.",
-          "cmp.marketing": "Marketing",
-          "cmp.marketing.desc": "Optional personalization and campaign measurement.",
-          "cmp.reject": "Reject all",
-          "cmp.accept": "Accept all",
-          "cmp.save": "Save preferences"
+          "cmp.desc": "We respect your privacy. This site does not use advertising or tracking cookies. Only minimal technical storage may be used for security and core functionality (e.g., language preferences).",
+          "cmp.necessary": "Technical",
+          "cmp.necessary.desc": "Security & core functionality (always on).",
+          "cmp.close": "Close"
         },
         zh: {
           "nav.about": "关于",
@@ -1071,16 +911,10 @@
           "card.test": "我们正在建设中，敬请期待。",
           "cookie.prefs": "Cookie 偏好设置",
           "cmp.title": "隐私与 Cookies",
-          "cmp.desc": "我们尊重您的隐私。本网站不使用广告或追踪 Cookies。为安全与基本功能所必需的 Cookies 始终启用。您可以接受或拒绝可选 Cookies。",
-          "cmp.necessary": "必要",
-          "cmp.necessary.desc": "安全与基本功能。",
-          "cmp.analytics": "分析",
-          "cmp.analytics.desc": "可选：匿名使用数据，用于改进网站。",
-          "cmp.marketing": "营销",
-          "cmp.marketing.desc": "可选：个性化与活动效果衡量。",
-          "cmp.reject": "全部拒绝",
-          "cmp.accept": "全部接受",
-          "cmp.save": "保存偏好"
+          "cmp.desc": "我们尊重您的隐私。本网站不使用广告或追踪 Cookies。仅会使用用于安全与核心功能的最少技术性存储（例如语言偏好）。",
+          "cmp.necessary": "技术性",
+          "cmp.necessary.desc": "安全与核心功能（始终启用）。",
+          "cmp.close": "关闭"
         },
         es: {
           "nav.about": "Info",
@@ -1093,16 +927,10 @@
           "card.test": "Estamos trabajando — volvemos pronto.",
           "cookie.prefs": "Preferencias de cookies",
           "cmp.title": "Privacidad y cookies",
-          "cmp.desc": "Respetamos su privacidad. Este sitio no utiliza cookies publicitarias ni de seguimiento. Las cookies necesarias siempre están activas por seguridad y funcionamiento básico. Puede aceptar o rechazar cookies opcionales.",
-          "cmp.necessary": "Necesarias",
-          "cmp.necessary.desc": "Seguridad y funcionamiento básico.",
-          "cmp.analytics": "Analítica",
-          "cmp.analytics.desc": "Opcional: métricas anónimas para mejorar el sitio.",
-          "cmp.marketing": "Marketing",
-          "cmp.marketing.desc": "Opcional: personalización y medición de campañas.",
-          "cmp.reject": "Rechazar todo",
-          "cmp.accept": "Aceptar todo",
-          "cmp.save": "Guardar preferencias"
+          "cmp.desc": "Respetamos su privacidad. Este sitio no utiliza cookies publicitarias ni de seguimiento. Solo puede usarse almacenamiento técnico mínimo para seguridad y funcionamiento básico (p. ej., preferencias de idioma).",
+          "cmp.necessary": "Técnicas",
+          "cmp.necessary.desc": "Seguridad y funcionamiento básico (siempre activas).",
+          "cmp.close": "Cerrar"
         },
         ca: {
           "nav.about": "Info",
@@ -1115,16 +943,10 @@
           "card.test": "Estem treballant — tornem aviat.",
           "cookie.prefs": "Preferències de cookies",
           "cmp.title": "Privacitat i cookies",
-          "cmp.desc": "Respectem la vostra privacitat. Aquest lloc no utilitza cookies publicitàries ni de seguiment. Les cookies necessàries sempre estan activades per seguretat i funcionament bàsic. Podeu acceptar o rebutjar cookies opcionals.",
-          "cmp.necessary": "Necessàries",
-          "cmp.necessary.desc": "Seguretat i funcionament bàsic.",
-          "cmp.analytics": "Analítica",
-          "cmp.analytics.desc": "Opcional: estadístiques anònimes per millorar el lloc.",
-          "cmp.marketing": "Màrqueting",
-          "cmp.marketing.desc": "Opcional: personalització i mesura de campanyes.",
-          "cmp.reject": "Rebutjar-ho tot",
-          "cmp.accept": "Acceptar-ho tot",
-          "cmp.save": "Desar preferències"
+          "cmp.desc": "Respectem la vostra privacitat. Aquest lloc no utilitza cookies publicitàries ni de seguiment. Només es pot usar un emmagatzematge tècnic mínim per seguretat i funcionament bàsic (p. ex., preferències d’idioma).",
+          "cmp.necessary": "Tècniques",
+          "cmp.necessary.desc": "Seguretat i funcionament bàsic (sempre actives).",
+          "cmp.close": "Tancar"
         },
         eu: {
           "nav.about": "Honi buruz",
@@ -1137,16 +959,10 @@
           "card.test": "Lanean ari gara — laster itzuliko gara.",
           "cookie.prefs": "Cookie ezarpenak",
           "cmp.title": "Pribatutasuna eta cookieak",
-          "cmp.desc": "Zure pribatutasuna errespetatzen dugu. Gune honek ez du publizitateko edo jarraipeneko cookierik erabiltzen. Beharrezko cookieak beti aktibo daude segurtasunerako eta oinarrizko funtziorako. Aukerako cookieak onartu edo baztertu ditzakezu.",
-          "cmp.necessary": "Beharrezkoak",
-          "cmp.necessary.desc": "Segurtasuna eta oinarrizko funtzionamendua.",
-          "cmp.analytics": "Analitika",
-          "cmp.analytics.desc": "Aukerakoa: estatistika anonimoak gunea hobetzeko.",
-          "cmp.marketing": "Marketina",
-          "cmp.marketing.desc": "Aukerakoa: pertsonalizazioa eta kanpainen neurketa.",
-          "cmp.reject": "Guztiak baztertu",
-          "cmp.accept": "Guztiak onartu",
-          "cmp.save": "Hobespenak gorde"
+          "cmp.desc": "Zure pribatutasuna errespetatzen dugu. Gune honek ez du publizitateko edo jarraipeneko cookierik erabiltzen. Segurtasunerako eta oinarrizko funtziorako gutxieneko biltegiratze teknikoa bakarrik erabil daiteke (adib., hizkuntza hobespenak).",
+          "cmp.necessary": "Teknikoa",
+          "cmp.necessary.desc": "Segurtasuna eta oinarrizko funtzionamendua (beti aktibo).",
+          "cmp.close": "Itxi"
         },
         fr: {
           "nav.about": "À propos",
@@ -1159,16 +975,10 @@
           "card.test": "Nous travaillons — de retour bientôt.",
           "cookie.prefs": "Préférences cookies",
           "cmp.title": "Confidentialité et cookies",
-          "cmp.desc": "Nous respectons votre vie privée. Ce site n’utilise pas de cookies publicitaires ou de suivi. Les cookies nécessaires sont toujours activés pour la sécurité et le fonctionnement de base. Vous pouvez accepter ou refuser les cookies optionnels.",
-          "cmp.necessary": "Nécessaires",
-          "cmp.necessary.desc": "Sécurité et fonctionnement de base.",
-          "cmp.analytics": "Analyse",
-          "cmp.analytics.desc": "Optionnel : statistiques anonymes pour améliorer le site.",
-          "cmp.marketing": "Marketing",
-          "cmp.marketing.desc": "Optionnel : personnalisation et mesure de campagne.",
-          "cmp.reject": "Tout refuser",
-          "cmp.accept": "Tout accepter",
-          "cmp.save": "Enregistrer les préférences"
+          "cmp.desc": "Nous respectons votre vie privée. Ce site n’utilise pas de cookies publicitaires ou de suivi. Seul un stockage technique minimal peut être utilisé pour la sécurité et les fonctionnalités de base (ex. préférences de langue).",
+          "cmp.necessary": "Technique",
+          "cmp.necessary.desc": "Sécurité & fonctionnement de base (toujours actif).",
+          "cmp.close": "Fermer"
         },
         ar: {
           "nav.about": "حول",
@@ -1180,17 +990,11 @@
           "footer.legal": "قانوني",
           "card.test": "نعمل على ذلك — نعود قريبًا.",
           "cookie.prefs": "تفضيلات الكوكيز",
-          "cmp.title": "الخصوصية وملفات تعريف الارتباط",
-          "cmp.desc": "نحن نحترم خصوصيتك. هذا الموقع لا يستخدم ملفات تعريف ارتباط إعلانية أو للتتبع. ملفات تعريف الارتباط الضرورية تكون مفعّلة دائمًا للأمان والوظائف الأساسية. يمكنك قبول أو رفض الملفات الاختيارية.",
-          "cmp.necessary": "ضرورية",
-          "cmp.necessary.desc": "الأمان والوظائف الأساسية.",
-          "cmp.analytics": "تحليلات",
-          "cmp.analytics.desc": "اختياري: إحصاءات مجهولة لتحسين الموقع.",
-          "cmp.marketing": "تسويق",
-          "cmp.marketing.desc": "اختياري: تخصيص وقياس الحملات.",
-          "cmp.reject": "رفض الكل",
-          "cmp.accept": "قبول الكل",
-          "cmp.save": "حفظ الإعدادات"
+          "cmp.title": "الخصوصية والكوكيز",
+          "cmp.desc": "نحن نحترم خصوصيتك. هذا الموقع لا يستخدم كوكيز إعلانية أو للتتبع. قد يتم استخدام حد أدنى من التخزين التقني للأمان والوظائف الأساسية (مثل تفضيلات اللغة).",
+          "cmp.necessary": "تقني",
+          "cmp.necessary.desc": "الأمان والوظائف الأساسية (مفعّل دائمًا).",
+          "cmp.close": "إغلاق"
         },
         ru: {
           "nav.about": "О нас",
@@ -1203,16 +1007,10 @@
           "card.test": "Мы работаем — скоро вернёмся.",
           "cookie.prefs": "Настройки cookies",
           "cmp.title": "Конфиденциальность и cookies",
-          "cmp.desc": "Мы уважаем вашу конфиденциальность. Этот сайт не использует рекламные или отслеживающие cookies. Необходимые cookies всегда включены для безопасности и базовой работы. Вы можете принять или отклонить необязательные cookies.",
-          "cmp.necessary": "Необходимые",
-          "cmp.necessary.desc": "Безопасность и базовая функциональность.",
-          "cmp.analytics": "Аналитика",
-          "cmp.analytics.desc": "Необязательно: анонимная статистика для улучшения сайта.",
-          "cmp.marketing": "Маркетинг",
-          "cmp.marketing.desc": "Необязательно: персонализация и измерение кампаний.",
-          "cmp.reject": "Отклонить все",
-          "cmp.accept": "Принять все",
-          "cmp.save": "Сохранить настройки"
+          "cmp.desc": "Мы уважаем вашу конфиденциальность. Этот сайт не использует рекламные или отслеживающие cookies. Может использоваться только минимальное техническое хранение для безопасности и базовой функциональности (например, языковые предпочтения).",
+          "cmp.necessary": "Технические",
+          "cmp.necessary.desc": "Безопасность и базовая функциональность (всегда включено).",
+          "cmp.close": "Закрыть"
         },
         hi: {
           "nav.about": "परिचय",
@@ -1225,16 +1023,10 @@
           "card.test": "हम काम कर रहे हैं — जल्द वापस आएँगे।",
           "cookie.prefs": "कुकी प्राथमिकताएँ",
           "cmp.title": "गोपनीयता और कुकीज़",
-          "cmp.desc": "हम आपकी गोपनीयता का सम्मान करते हैं। यह साइट विज्ञापन या ट्रैकिंग कुकीज़ का उपयोग नहीं करती। सुरक्षा और मूल कार्यक्षमता के लिए आवश्यक कुकीज़ हमेशा चालू रहती हैं। आप वैकल्पिक कुकीज़ स्वीकार या अस्वीकार कर सकते हैं।",
-          "cmp.necessary": "आवश्यक",
-          "cmp.necessary.desc": "सुरक्षा और मूल कार्यक्षमता।",
-          "cmp.analytics": "विश्लेषण",
-          "cmp.analytics.desc": "वैकल्पिक: साइट सुधार के लिए अनाम आँकड़े।",
-          "cmp.marketing": "मार्केटिंग",
-          "cmp.marketing.desc": "वैकल्पिक: वैयक्तिकरण और अभियान मापन।",
-          "cmp.reject": "सभी अस्वीकार करें",
-          "cmp.accept": "सभी स्वीकार करें",
-          "cmp.save": "प्राथमिकताएँ सहेजें"
+          "cmp.desc": "हम आपकी गोपनीयता का सम्मान करते हैं। यह साइट विज्ञापन या ट्रैकिंग कुकीज़ का उपयोग नहीं करती। सुरक्षा और मूल कार्यक्षमता के लिए केवल न्यूनतम तकनीकी स्टोरेज (जैसे भाषा प्राथमिकताएँ) उपयोग हो सकता है।",
+          "cmp.necessary": "तकनीकी",
+          "cmp.necessary.desc": "सुरक्षा और मूल कार्यक्षमता (हमेशा चालू)।",
+          "cmp.close": "बंद करें"
         }
       };
 
@@ -1242,7 +1034,6 @@
       const DEFAULT_LANG = "en";
       const storageKey = "mx_lang";
 
-      // ✅ NEW: Detect preferred language from the browser (first-visit only)
       function detectBrowserLang(){
         const supported = new Set(Object.keys(I18N));
         const prefs = (Array.isArray(navigator.languages) && navigator.languages.length)
@@ -1257,7 +1048,6 @@
         return null;
       }
 
-      // ✅ Updated: storage -> browser -> fallback (applies to ALL languages)
       function getLang(){
         const saved = localStorage.getItem(storageKey);
         if (saved && I18N[saved]) return saved;
@@ -1491,7 +1281,6 @@
           }, { passive:true });
         }
       })();
-
     })();
 
     (function(){
@@ -1656,16 +1445,14 @@
       }
       function isOpen(){ return v.classList.contains('is-open'); }
 
-      // Toggle on click of the trigger (not on link clicks inside menu)
       v.addEventListener('click', (e) => {
         const a = e.target.closest('a');
-        if (a) return; // let link navigate normally
+        if (a) return;
         e.preventDefault();
         e.stopPropagation();
         setOpen(!isOpen());
       });
 
-      // Close when clicking outside — but use pointerdown so it fires before click
       document.addEventListener('pointerdown', (e) => {
         if (!v.contains(e.target)) setOpen(false);
       });
@@ -1686,11 +1473,9 @@
         { id: 'vl-right',  delay: 3400 }
       ];
 
-      // Track which video each lane is playing to avoid same video in adjacent lanes
       const laneVideo = { 'vl-left': -1, 'vl-center': -1, 'vl-right': -1 };
 
       function pickVideo(laneId) {
-        // Avoid repeating the video currently on this lane
         const avoid = laneVideo[laneId];
         let idx;
         do { idx = Math.floor(Math.random() * VIDEOS.length); } while (idx === avoid && VIDEOS.length > 1);
@@ -1698,7 +1483,6 @@
         return VIDEOS[idx];
       }
 
-      // Random pause between cycles: 1s–4s
       function randPause() {
         return 1000 + Math.random() * 3000;
       }
@@ -1713,12 +1497,8 @@
         video.src = src;
         video.currentTime = 0;
 
-        // 35% chance of filling the full lane
-        if (Math.random() < 0.35) {
-          wrap.classList.add('is-expanded');
-        } else {
-          wrap.classList.remove('is-expanded');
-        }
+        if (Math.random() < 0.35) wrap.classList.add('is-expanded');
+        else wrap.classList.remove('is-expanded');
 
         const p = video.play();
         if (p && p.catch) p.catch(() => {});
@@ -1733,18 +1513,12 @@
       }
 
       function boot() {
-        LANES.forEach(({ id, delay }) => {
-          setTimeout(() => runLane(id), delay);
-        });
+        LANES.forEach(({ id, delay }) => setTimeout(() => runLane(id), delay));
       }
 
-      if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        boot();
-      } else {
-        document.addEventListener('DOMContentLoaded', boot);
-      }
+      if (document.readyState === 'complete' || document.readyState === 'interactive') boot();
+      else document.addEventListener('DOMContentLoaded', boot);
     })();
-
   </script>
 </body>
 </html>
