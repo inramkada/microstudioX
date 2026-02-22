@@ -750,6 +750,171 @@
       z-index:1;
     }
 
+  
+
+    /* ── viulenza-ish hero block ─────────────────── */
+    .mx-main{
+      min-height: calc(100vh - 120px);
+      padding: clamp(18px, 4vw, 46px) var(--px);
+    }
+
+    .mx-hero{
+      position:relative;
+      padding: clamp(18px, 4vw, 42px) 0;
+      isolation:isolate;
+    }
+
+    .mx-hero-grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: clamp(18px, 3vw, 44px);
+      align-items:start;
+    }
+
+    .mx-kicker{
+      margin:0 0 14px;
+      font-size: 11px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      opacity:.68;
+      mix-blend-mode: difference;
+    }
+
+    .mx-headline{
+      margin:0 0 18px;
+      font-size: clamp(34px, 5.4vw, 86px);
+      line-height: .9;
+      letter-spacing: .08em;
+      text-transform:uppercase;
+      font-weight: 900;
+      text-shadow: 0 0 18px rgba(255,255,255,.08);
+    }
+
+    .mx-sub{
+      margin:0 0 18px;
+      font-size: 13px;
+      line-height:1.58;
+      opacity:.72;
+      max-width: 70ch;
+    }
+
+    .mx-cta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    .mx-pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      padding: 10px 14px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.92);
+      text-decoration:none;
+      font-size: 11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+    }
+    .mx-pill:hover{
+      border-color: rgba(255,255,255,.28);
+      background: rgba(255,255,255,.10);
+      color:#fff;
+    }
+    .mx-pill.ghost{
+      background: transparent;
+      border-color: rgba(255,255,255,.12);
+    }
+
+    .mx-hero-right{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 18px;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      overflow:hidden;
+    }
+
+    .mx-cap{
+      border-top:1px solid rgba(255,255,255,.08);
+      padding: 14px 14px 12px;
+    }
+    .mx-cap:first-child{ border-top:0; }
+
+    .mx-cap-row{
+      width:100%;
+      text-align:left;
+      background:transparent;
+      border:0;
+      padding:0;
+      cursor:pointer;
+
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.92);
+    }
+    .mx-cap-row:hover{ color:#fff; }
+
+    .mx-cap-sub{
+      margin-top:8px;
+      font-size: 11px;
+      letter-spacing:.04em;
+      line-height:1.45;
+      opacity:.62;
+    }
+
+    .mx-marquee{
+      margin-top: 22px;
+      border-top:1px solid rgba(255,255,255,.08);
+      padding-top: 10px;
+      overflow:hidden;
+      opacity:.55;
+      mix-blend-mode: difference;
+    }
+
+    .mx-marquee-track{
+      display:inline-flex;
+      gap:22px;
+      white-space:nowrap;
+      will-change: transform;
+      animation: mx-marquee 18s linear infinite;
+      font-size: 11px;
+      letter-spacing:.24em;
+      text-transform:uppercase;
+    }
+    .mx-marquee-track span{ opacity:.9; }
+
+    @keyframes mx-marquee{
+      from{ transform: translateX(0); }
+      to  { transform: translateX(-50%); }
+    }
+
+    /* fx jitter */
+    .mx-fx-jitter{
+      animation: mx-jitter 160ms steps(2,end) 1;
+    }
+    @keyframes mx-jitter{
+      0%{ transform: translate3d(0,0,0); }
+      30%{ transform: translate3d(.5px,-.4px,0); }
+      60%{ transform: translate3d(-.6px,.4px,0); }
+      100%{ transform: translate3d(0,0,0); }
+    }
+
+    @media (max-width: 980px){
+      .mx-hero-grid{ grid-template-columns: 1fr; }
+      .mx-hero-right{ order: 2; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .mx-marquee-track{ animation:none !important; }
+      .mx-fx-jitter{ animation:none !important; }
+    }
+
   </style>
 </head>
 
@@ -764,7 +929,7 @@
   <div class="page" id="app-root">
     <header id="mx-header">
       <div class="topbar">
-        <div class="brand">microstudio<span style="text-transform:uppercase">X</span></div>
+        <div class="brand" data-fx="scramble">microstudio<span style="text-transform:uppercase">X</span></div>
 
         <nav>
           <div class="lang-switch" id="lang-switch">
@@ -790,10 +955,10 @@
             </div>
           </div>
 
-          <a class="navlink" href="#/about" data-i18n="nav.about">About</a>
+          <a class="navlink" href="#/about" data-i18n="nav.about"" data-fx="scramble>About</a>
 
           <div class="navlink services" id="services" role="button" aria-haspopup="true" aria-expanded="false">
-            <span data-i18n="nav.services">Services</span>
+            <span data-i18n="nav.services" data-fx="scramble">Services</span>
             <div class="services-menu" aria-label="Services">
               <a class="v-item" href="https://www.microstudiox.com">
                 <span class="v-main">DIGITAL PLATFORMS</span>
@@ -810,21 +975,73 @@
             </div>
           </div>
 
-          <a class="navlink" href="/cdn-cgi/l/email-protection#3a53545c557a5753594855485f4e5b53564214595557" data-i18n="nav.contact">Contact</a>
+          <a class="navlink" href="/cdn-cgi/l/email-protection#3a53545c557a5753594855485f4e5b53564214595557" data-i18n="nav.contact"" data-fx="scramble>Contact</a>
         </nav>
       </div>
     </header>
 
-    <main></main>
+    
+    <main id="main" class="mx-main">
+      <section class="mx-hero" aria-label="Hero">
+        <div class="mx-hero-grid">
+          <div class="mx-hero-left">
+            <p class="mx-kicker" data-i18n="hero.kicker" data-fx="scramble">technology-driven creative studio</p>
+
+            <h1 class="mx-headline" data-i18n="hero.headline" data-fx="scramble">
+              SYSTEMS FOR BRANDS THAT NEED TO MOVE.
+            </h1>
+
+            <p class="mx-sub" data-i18n="hero.sub" data-fx="scramble">
+              Web platforms, realtime visuals, AI-driven media — built in vanilla when it matters.
+            </p>
+
+            <div class="mx-cta">
+              <a class="mx-pill" href="#/work" data-i18n="hero.cta.work" data-fx="scramble">Selected work</a>
+              <a class="mx-pill ghost" href="#/contact" data-i18n="hero.cta.contact" data-fx="scramble">Contact</a>
+            </div>
+          </div>
+
+          <div class="mx-hero-right" aria-label="Capabilities">
+            <div class="mx-cap">
+              <button class="mx-cap-row" type="button" data-fx="scramble" data-i18n="cap.1">DIGITAL PLATFORMS</button>
+              <div class="mx-cap-sub" data-i18n="cap.1.sub">Design + build. High-performance frontends.</div>
+            </div>
+
+            <div class="mx-cap">
+              <button class="mx-cap-row" type="button" data-fx="scramble" data-i18n="cap.2">AI DRIVEN MEDIA</button>
+              <div class="mx-cap-sub" data-i18n="cap.2.sub">Avatars, narratives, pipelines, automation.</div>
+            </div>
+
+            <div class="mx-cap">
+              <button class="mx-cap-row" type="button" data-fx="scramble" data-i18n="cap.3">DIGITAL ID SYSTEMS</button>
+              <div class="mx-cap-sub" data-i18n="cap.3.sub">Identity surfaces, verification UX, vectors.</div>
+            </div>
+
+            <div class="mx-cap">
+              <button class="mx-cap-row" type="button" data-fx="scramble" data-i18n="cap.4">EXPERIMENTAL TYPE</button>
+              <div class="mx-cap-sub" data-i18n="cap.4.sub">Kinetic typography, interaction, motion rules.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mx-marquee" aria-hidden="true">
+          <div class="mx-marquee-track">
+            <span>VANILLA</span><span>HASKELL</span><span>WEBGL</span><span>RUNTIME</span><span>IDENTITY</span><span>MEDIA</span>
+            <span>VANILLA</span><span>HASKELL</span><span>WEBGL</span><span>RUNTIME</span><span>IDENTITY</span><span>MEDIA</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
 
     <footer>
       <div class="footer-inner">
         <div class="footer-links">
-          <a href="terms.html" data-i18n="footer.terms">Terms</a>
-          <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
+          <a href="terms.html" data-i18n="footer.terms" data-fx="scramble>Terms</a>
+          <a href="privacy.html" data-i18n="footer.privacy" data-fx="scramble>Privacy</a>
 
           <span style="display:inline-flex; align-items:center;">
-            <a href="cookies.html" data-i18n="footer.cookies">Cookies</a>
+            <a href="cookies.html" data-i18n="footer.cookies" data-fx="scramble>Cookies</a>
             <button
               type="button"
               class="cookie-gear"
@@ -838,7 +1055,7 @@
             </button>
           </span>
 
-          <a href="legal.html" data-i18n="footer.legal">Legal</a>
+          <a href="legal.html" data-i18n="footer.legal" data-fx="scramble>Legal</a>
         </div>
 
         <div class="copyright">
@@ -1058,7 +1275,27 @@
           "cmp.marketing.desc": "Optional personalization and campaign measurement.",
           "cmp.reject": "Reject all",
           "cmp.accept": "Accept all",
-          "cmp.save": "Save preferences"
+          "cmp.save": "Save preferences",
+          "brand": "microstudioX",
+          "svc.platforms": "DIGITAL PLATFORMS",
+          "svc.platforms.sub": "WEB DESIGN",
+          "svc.ai": "AI DRIVEN MEDIA",
+          "svc.ai.sub": "MODELS",
+          "svc.id": "DIGITAL ID SYSTEMS",
+          "svc.id.sub": "VECTOR TRACK",
+          "hero.kicker": "technology-driven creative studio",
+          "hero.headline": "SYSTEMS FOR BRANDS THAT NEED TO MOVE.",
+          "hero.sub": "Web platforms, realtime visuals, AI-driven media — built in vanilla when it matters.",
+          "hero.cta.work": "Selected work",
+          "hero.cta.contact": "Contact",
+          "cap.1": "DIGITAL PLATFORMS",
+          "cap.1.sub": "Design + build. High-performance frontends.",
+          "cap.2": "AI DRIVEN MEDIA",
+          "cap.2.sub": "Avatars, narratives, pipelines, automation.",
+          "cap.3": "DIGITAL ID SYSTEMS",
+          "cap.3.sub": "Identity surfaces, verification UX, vectors.",
+          "cap.4": "EXPERIMENTAL TYPE",
+          "cap.4.sub": "Kinetic typography, interaction, motion rules."
         },
         zh: {
           "nav.about": "关于",
@@ -1080,7 +1317,27 @@
           "cmp.marketing.desc": "可选：个性化与活动效果衡量。",
           "cmp.reject": "全部拒绝",
           "cmp.accept": "全部接受",
-          "cmp.save": "保存偏好"
+          "cmp.save": "保存偏好",
+          "brand": "microstudioX",
+          "svc.platforms": "数字平台",
+          "svc.platforms.sub": "网页设计",
+          "svc.ai": "AI 媒体",
+          "svc.ai.sub": "模型",
+          "svc.id": "数字身份系统",
+          "svc.id.sub": "VECTOR TRACK",
+          "hero.kicker": "技术驱动的创意工作室",
+          "hero.headline": "为需要快速行动的品牌打造系统。",
+          "hero.sub": "Web 平台、实时视觉、AI 媒体——关键时刻用 vanilla 构建。",
+          "hero.cta.work": "作品",
+          "hero.cta.contact": "联系",
+          "cap.1": "数字平台",
+          "cap.1.sub": "设计 + 构建。高性能前端。",
+          "cap.2": "AI 媒体",
+          "cap.2.sub": "虚拟人、叙事、流水线、自动化。",
+          "cap.3": "数字身份系统",
+          "cap.3.sub": "验证 UX、身份界面、向量。",
+          "cap.4": "实验字体",
+          "cap.4.sub": "动态字体、交互、运动规则。"
         },
         es: {
           "nav.about": "Info",
@@ -1124,7 +1381,27 @@
           "cmp.marketing.desc": "Opcional: personalització i mesura de campanyes.",
           "cmp.reject": "Rebutjar-ho tot",
           "cmp.accept": "Acceptar-ho tot",
-          "cmp.save": "Desar preferències"
+          "cmp.save": "Desar preferències",
+          "brand": "microstudioX",
+          "svc.platforms": "PLATAFORMES DIGITALS",
+          "svc.platforms.sub": "DISSENY WEB",
+          "svc.ai": "MITJANS AMB IA",
+          "svc.ai.sub": "MODELS",
+          "svc.id": "SISTEMES D'IDENTITAT",
+          "svc.id.sub": "VECTOR TRACK",
+          "hero.kicker": "estudi creatiu tecnològic",
+          "hero.headline": "SISTEMES PER A MARQUES QUE HAN DE MOURE'S.",
+          "hero.sub": "Plataformes web, visuals en temps real, mitjans amb IA — en vanilla quan importa.",
+          "hero.cta.work": "Projectes",
+          "hero.cta.contact": "Contacte",
+          "cap.1": "PLATAFORMES DIGITALS",
+          "cap.1.sub": "Disseny + construcció. Frontends d'alt rendiment.",
+          "cap.2": "MITJANS AMB IA",
+          "cap.2.sub": "Avatars, narrativa, pipelines, automatització.",
+          "cap.3": "SISTEMES D'IDENTITAT",
+          "cap.3.sub": "UX de verificació, superfícies d'identitat, vectors.",
+          "cap.4": "TIPOGRAFIA EXPERIMENTAL",
+          "cap.4.sub": "Tipografia cinètica, interacció, regles de moviment."
         },
         eu: {
           "nav.about": "Honi buruz",
@@ -1146,7 +1423,27 @@
           "cmp.marketing.desc": "Aukerakoa: pertsonalizazioa eta kanpainen neurketa.",
           "cmp.reject": "Guztiak baztertu",
           "cmp.accept": "Guztiak onartu",
-          "cmp.save": "Hobespenak gorde"
+          "cmp.save": "Hobespenak gorde",
+          "brand": "microstudioX",
+          "svc.platforms": "PLATAFORMA DIGITALAK",
+          "svc.platforms.sub": "WEB DISEINUA",
+          "svc.ai": "IA MEDIA",
+          "svc.ai.sub": "MODELLOAK",
+          "svc.id": "IDENTITATE SISTEMAK",
+          "svc.id.sub": "VECTOR TRACK",
+          "hero.kicker": "sormen-estudio teknologikoa",
+          "hero.headline": "MUGITU BEHAR DUTEN MARKENTZAKO SISTEMAK.",
+          "hero.sub": "Web plataformak, denbora errealeko bisualak, IA media — vanilla, benetan garrantzitsua denean.",
+          "hero.cta.work": "Lan aukeratua",
+          "hero.cta.contact": "Kontaktua",
+          "cap.1": "PLATAFORMA DIGITALAK",
+          "cap.1.sub": "Diseinua + eraikuntza. Errendimendu handiko frontendak.",
+          "cap.2": "IA MEDIA",
+          "cap.2.sub": "Avatarrak, narratiba, pipelineak, automatizazioa.",
+          "cap.3": "IDENTITATE SISTEMAK",
+          "cap.3.sub": "Egiaztapen UX, identitate-azalak, bektoreak.",
+          "cap.4": "TIPOGRAFIA ESPERIMENTALA",
+          "cap.4.sub": "Tipografia kinetikoa, interakzioa, mugimendu arauak."
         },
         fr: {
           "nav.about": "À propos",
@@ -1168,7 +1465,27 @@
           "cmp.marketing.desc": "Optionnel : personnalisation et mesure de campagne.",
           "cmp.reject": "Tout refuser",
           "cmp.accept": "Tout accepter",
-          "cmp.save": "Enregistrer les préférences"
+          "cmp.save": "Enregistrer les préférences",
+          "brand": "microstudioX",
+          "svc.platforms": "PLATEFORMES DIGITALES",
+          "svc.platforms.sub": "DESIGN WEB",
+          "svc.ai": "MÉDIAS IA",
+          "svc.ai.sub": "MODÈLES",
+          "svc.id": "SYSTÈMES D'IDENTITÉ",
+          "svc.id.sub": "VECTOR TRACK",
+          "hero.kicker": "studio créatif technologique",
+          "hero.headline": "DES SYSTÈMES POUR DES MARQUES QUI DOIVENT BOUGER.",
+          "hero.sub": "Plateformes web, visuels temps réel, médias IA — en vanilla quand ça compte.",
+          "hero.cta.work": "Projets",
+          "hero.cta.contact": "Contact",
+          "cap.1": "PLATEFORMES DIGITALES",
+          "cap.1.sub": "Design + build. Frontends haute performance.",
+          "cap.2": "MÉDIAS IA",
+          "cap.2.sub": "Avatars, narration, pipelines, automatisation.",
+          "cap.3": "SYSTÈMES D'IDENTITÉ",
+          "cap.3.sub": "UX de vérification, surfaces d'identité, vecteurs.",
+          "cap.4": "TYPO EXPÉRIMENTALE",
+          "cap.4.sub": "Typo cinétique, interaction, règles de mouvement."
         },
         ar: {
           "nav.about": "حول",
@@ -1190,7 +1507,27 @@
           "cmp.marketing.desc": "اختياري: تخصيص وقياس الحملات.",
           "cmp.reject": "رفض الكل",
           "cmp.accept": "قبول الكل",
-          "cmp.save": "حفظ الإعدادات"
+          "cmp.save": "حفظ الإعدادات",
+          "brand": "microstudioX",
+          "svc.platforms": "منصات رقمية",
+          "svc.platforms.sub": "تصميم ويب",
+          "svc.ai": "وسائط بالذكاء الاصطناعي",
+          "svc.ai.sub": "نماذج",
+          "svc.id": "أنظمة هوية رقمية",
+          "svc.id.sub": "VECTOR TRACK",
+          "hero.kicker": "استوديو إبداعي تقني",
+          "hero.headline": "أنظمة لعلامات تحتاج أن تتحرك.",
+          "hero.sub": "منصات ويب، مرئيات فورية، وسائط بالذكاء الاصطناعي — ببساطة vanilla حين يهم.",
+          "hero.cta.work": "أعمال مختارة",
+          "hero.cta.contact": "تواصل",
+          "cap.1": "منصات رقمية",
+          "cap.1.sub": "تصميم + بناء. واجهات عالية الأداء.",
+          "cap.2": "وسائط بالذكاء الاصطناعي",
+          "cap.2.sub": "أفاتار، سرد، مسارات، أتمتة.",
+          "cap.3": "أنظمة هوية رقمية",
+          "cap.3.sub": "تجربة تحقق، واجهات هوية، متجهات.",
+          "cap.4": "تايب تجريبي",
+          "cap.4.sub": "تايب حركي، تفاعل، قواعد حركة."
         },
         ru: {
           "nav.about": "О нас",
@@ -1212,7 +1549,27 @@
           "cmp.marketing.desc": "Необязательно: персонализация и измерение кампаний.",
           "cmp.reject": "Отклонить все",
           "cmp.accept": "Принять все",
-          "cmp.save": "Сохранить настройки"
+          "cmp.save": "Сохранить настройки",
+          "brand": "microstudioX",
+          "svc.platforms": "ЦИФРОВЫЕ ПЛАТФОРМЫ",
+          "svc.platforms.sub": "ВЕБ-ДИЗАЙН",
+          "svc.ai": "МЕДИА С ИИ",
+          "svc.ai.sub": "МОДЕЛИ",
+          "svc.id": "СИСТЕМЫ ИДЕНТИЧНОСТИ",
+          "svc.id.sub": "VECTOR TRACK",
+          "hero.kicker": "креативная технологическая студия",
+          "hero.headline": "СИСТЕМЫ ДЛЯ БРЕНДОВ, КОТОРЫМ НУЖНО ДВИГАТЬСЯ.",
+          "hero.sub": "Веб‑платформы, realtime‑визуалы, медиа с ИИ — на vanilla, когда важно.",
+          "hero.cta.work": "Проекты",
+          "hero.cta.contact": "Контакты",
+          "cap.1": "ЦИФРОВЫЕ ПЛАТФОРМЫ",
+          "cap.1.sub": "Дизайн + разработка. Высокопроизводительные фронтенды.",
+          "cap.2": "МЕДИА С ИИ",
+          "cap.2.sub": "Аватары, нарративы, пайплайны, автоматизация.",
+          "cap.3": "СИСТЕМЫ ИДЕНТИЧНОСТИ",
+          "cap.3.sub": "UX проверки, поверхности идентичности, векторы.",
+          "cap.4": "ЭКСПЕРИМЕНТАЛЬНАЯ ТИПОГРАФИКА",
+          "cap.4.sub": "Кинетическая типографика, интеракции, правила движения."
         },
         hi: {
           "nav.about": "परिचय",
@@ -1234,7 +1591,27 @@
           "cmp.marketing.desc": "वैकल्पिक: वैयक्तिकरण और अभियान मापन।",
           "cmp.reject": "सभी अस्वीकार करें",
           "cmp.accept": "सभी स्वीकार करें",
-          "cmp.save": "प्राथमिकताएँ सहेजें"
+          "cmp.save": "प्राथमिकताएँ सहेजें",
+          "brand": "microstudioX",
+          "svc.platforms": "डिजिटल प्लेटफ़ॉर्म",
+          "svc.platforms.sub": "वेब डिज़ाइन",
+          "svc.ai": "AI मीडिया",
+          "svc.ai.sub": "मॉडल्स",
+          "svc.id": "डिजिटल आईडी सिस्टम",
+          "svc.id.sub": "VECTOR TRACK",
+          "hero.kicker": "टेक्नोलॉजी-ड्रिवन क्रिएटिव स्टूडियो",
+          "hero.headline": "ऐसे सिस्टम जो ब्रांड्स को मूव करने दें।",
+          "hero.sub": "वेब प्लेटफ़ॉर्म, रियलटाइम विजुअल्स, AI मीडिया — vanilla में जब ज़रूरी हो।",
+          "hero.cta.work": "काम",
+          "hero.cta.contact": "संपर्क",
+          "cap.1": "डिजिटल प्लेटफ़ॉर्म",
+          "cap.1.sub": "डिज़ाइन + बिल्ड. हाई‑परफॉरमेंस फ्रंटएंड.",
+          "cap.2": "AI मीडिया",
+          "cap.2.sub": "अवतार, नैरेटिव्स, पाइपलाइन्स, ऑटोमेशन.",
+          "cap.3": "डिजिटल आईडी सिस्टम",
+          "cap.3.sub": "वेरिफ़िकेशन UX, पहचान सतहें, वेक्टर.",
+          "cap.4": "एक्सपेरिमेंटल टाइप",
+          "cap.4.sub": "काइनेटिक टाइपोग्राफी, इंटरैक्शन, मोशन रूल्स."
         }
       };
 
@@ -1742,6 +2119,137 @@
         boot();
       } else {
         document.addEventListener('DOMContentLoaded', boot);
+      }
+    })();
+
+  
+
+    /* ── viulenza-ish letter FX: hover scramble + entrance cascade ── */
+    (function(){
+      const FX_ATTR = "data-fx";
+      const CLASS_JITTER = "mx-fx-jitter";
+
+      function getActiveLang(){
+        const html = document.documentElement;
+        return (html && html.lang) ? html.lang : "en";
+      }
+
+      function poolForLang(lang){
+        // Must match your i18n pools if present
+        const POOL_LATIN = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const POOL_CYR   = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ0123456789";
+        const POOL_DEV   = "अआइईउऊएऐओऔकखगघचछजझटठडढतथदधनपफबभमयरलवशषसह०१२३४५६७८९";
+        const POOL_CJK   = "的一是在不了有人这中大为上个国我以要他时来用们生到作地于出就分对成会可主发年动同工也能下过子说产种面而方后多定行学法所民得经";
+        const POOL_AR    = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي٠١٢٣٤٥٦٧٨٩";
+        if (lang === "ru") return POOL_CYR;
+        if (lang === "hi") return POOL_DEV;
+        if (lang === "zh") return POOL_CJK;
+        if (lang === "ar") return POOL_AR;
+        return POOL_LATIN;
+      }
+
+      function scramble(el, finalText, durationMs, lang){
+        const base = String(finalText ?? "");
+        const pool = poolForLang(lang);
+        const isArabic = (lang === "ar");
+
+        const start = performance.now();
+        const tick = (t) => {
+          const p = Math.min(1, (t - start) / durationMs);
+          const reveal = Math.floor(p * base.length);
+
+          if (isArabic){
+            const shown = base.slice(0, reveal);
+            const hidden = base.slice(reveal).replace(/[^\s]/g, " ");
+            el.textContent = shown + hidden;
+            if (p < 1) requestAnimationFrame(tick);
+            else el.textContent = base;
+            return;
+          }
+
+          let out = "";
+          for (let i = 0; i < base.length; i++){
+            const c = base[i];
+            if (i < reveal) { out += c; continue; }
+            if (c === " ") { out += " "; continue; }
+            if (/[\.\,\!\?\:\;\-\—\–\(\)\[\]\/\&\+%#@€$£"']/.test(c)) { out += c; continue; }
+            out += pool[(Math.random() * pool.length) | 0];
+          }
+          el.textContent = out;
+
+          if (p < 1) requestAnimationFrame(tick);
+          else el.textContent = base;
+        };
+        requestAnimationFrame(tick);
+      }
+
+      function ensureFxText(el){
+        if (!el) return null;
+        const existing = el.getAttribute("data-fx-text");
+        if (existing != null) return existing;
+        const t = (el.textContent || "").trimEnd();
+        el.setAttribute("data-fx-text", t);
+        return t;
+      }
+
+      function arm(el){
+        if (!el || el.__mxFxArmed) return;
+        el.__mxFxArmed = true;
+
+        const base = ensureFxText(el);
+        if (base == null) return;
+
+        el.addEventListener("pointerenter", () => {
+          const lang = getActiveLang();
+          const txt = el.getAttribute("data-fx-text") ?? base;
+          el.classList.remove(CLASS_JITTER);
+          void el.offsetWidth;
+          el.classList.add(CLASS_JITTER);
+          scramble(el, txt, 420, lang);
+        }, { passive:true });
+
+        el.addEventListener("focus", () => {
+          const lang = getActiveLang();
+          const txt = el.getAttribute("data-fx-text") ?? base;
+          scramble(el, txt, 420, lang);
+        }, { passive:true });
+      }
+
+      function scan(){
+        const nodes = Array.from(document.querySelectorAll(`[${FX_ATTR}="scramble"]`));
+        nodes.forEach(arm);
+      }
+
+      function entranceCascade(){
+        const lang = getActiveLang();
+        const nodes = Array.from(document.querySelectorAll(`[${FX_ATTR}="scramble"]`));
+        const first = nodes.slice(0, 10); // keep it sharp, not noisy
+        first.forEach((el, i) => {
+          const txt = ensureFxText(el);
+          if (!txt) return;
+          setTimeout(() => scramble(el, txt, 320, lang), 80 + i * 60);
+        });
+      }
+
+      // Hook into i18n applyLang if present: re-arm + refresh stored fx text.
+      const prevApply = window.__mxApplyLang;
+      if (typeof prevApply === "function"){
+        window.__mxApplyLang = function(lang){
+          prevApply(lang);
+          // Update fx text after i18n has swapped content
+          setTimeout(() => {
+            document.querySelectorAll(`[${FX_ATTR}="scramble"]`).forEach(el => {
+              el.setAttribute("data-fx-text", (el.textContent || "").trimEnd());
+            });
+            scan();
+          }, 260);
+        };
+      }
+
+      if (document.readyState === "complete" || document.readyState === "interactive"){
+        scan(); entranceCascade();
+      } else {
+        document.addEventListener("DOMContentLoaded", () => { scan(); entranceCascade(); });
       }
     })();
 
