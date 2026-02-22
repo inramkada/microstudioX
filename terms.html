@@ -101,17 +101,10 @@
       justify-content:space-between;
       gap:10px;
       mix-blend-mode: difference;
-      mix-blend-mode:difference;
+      -webkit-font-smoothing: subpixel-antialiased;
+      transform: translateZ(0);
     }
-
-    @keyframes chroma-split {
-      0%, 89%  { text-shadow: none; }
-      90%      { text-shadow: -2px 0 0 rgba(255,0,0,.85),  2px 0 0 rgba(0,200,255,.85); }
-      92%      { text-shadow: -1px 0 0 rgba(255,0,0,.60),  1px 0 0 rgba(0,200,255,.60); }
-      94%      { text-shadow: -3px 0 0 rgba(255,0,0,.90),  3px 0 0 rgba(0,200,255,.90); }
-      96%      { text-shadow: -1px 0 0 rgba(255,0,0,.50),  1px 0 0 rgba(0,200,255,.50); }
-      98%      { text-shadow: -2px 0 0 rgba(255,0,0,.80),  2px 0 0 rgba(0,200,255,.80); }
-      100%     { text-shadow: none; }
+      mix-blend-mode:difference;
     }
 
     .brand{
@@ -123,7 +116,6 @@
       line-height: 1;
       color: #fff;
       mix-blend-mode: difference;
-      animation: chroma-split 6s infinite;
     }
 
     nav{
@@ -143,8 +135,6 @@
       padding:5px 2px;
       position:relative;
       mix-blend-mode: difference;
-      animation: chroma-split 6s infinite;
-      animation-delay: 1.2s;
     }
     .navlink:hover{ color:rgba(255,255,255,.96); }
     .navlink::after{
@@ -405,6 +395,8 @@
       align-items:center;
       gap:6px;
       mix-blend-mode: difference;
+      -webkit-font-smoothing: subpixel-antialiased;
+      transform: translateZ(0);
     }
 
     .footer-links{
@@ -422,8 +414,6 @@
     .footer-links a{
       color:#fff;
       text-decoration:none;
-      animation: chroma-split 6s infinite;
-      animation-delay: 2.4s;
     }
     .footer-links a:hover{ color:#fff; }
 
