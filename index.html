@@ -150,6 +150,26 @@
       z-index:2;
       color: rgba(255,255,255,.92);
     }
+/* Dumbar optical halo (kept outside blend-mode:difference) */
+.brand::before,
+.navlink::before{
+  content: attr(data-text);
+  position:absolute;
+  inset:0;
+
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow:
+    -0.6px 0 rgba(255,70,95,.35),
+     0.6px 0 rgba(80,210,255,.28);
+
+  mix-blend-mode: normal;
+  opacity:.9;
+  pointer-events:none;
+  white-space: nowrap;
+}
+
 
     .navlink:hover{ color:#fff; }
 
