@@ -713,12 +713,13 @@
       max-width:none; max-height:none;
       object-fit:none;
       opacity:0;
-      transition: opacity 1.6s ease, width 1.2s ease, height 1.2s ease, object-fit 0s;
+      transition: opacity 1.6s ease;
     }
-    /* Expanded: fills the full lane */
+    /* Expanded: fill the lane's full width while keeping natural video height */
     .vl.is-expanded video{
-      width:100%; height:100%;
-      object-fit:cover;
+      width:33.33vw;
+      height:auto;
+      object-fit:none;
     }
     .vl.is-on video{ opacity:1; }
 
