@@ -66,23 +66,10 @@
       min-height:100%;
       display:grid;
       grid-template-rows:auto 1fr auto;
-      /* isolation removed for blending */
+      
     }
 
-    .page::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      opacity:.028;
-      background-image:
-        radial-gradient(circle at 20% 30%, rgba(255,255,255,.07), transparent 46%),
-        radial-gradient(circle at 80% 70%, rgba(255,255,255,.05), transparent 44%),
-        repeating-linear-gradient(0deg, rgba(255,255,255,.02), rgba(255,255,255,.02) 1px, transparent 1px, transparent 4px);
-      mix-blend-mode:difference;
-      z-index:-1;
-    }
-
+    
     header, footer{
       background: transparent;
       backdrop-filter: none;
@@ -146,7 +133,7 @@
     .brand, .navlink{
       position:relative;
       z-index:2;
-      color:rgba(255,255,255,.86);
+      color:rgba(255,255,255,.74);
     }
 
     .navlink:hover{ color:inherit; }
@@ -409,7 +396,7 @@
       align-items:center;
       gap:6px;
       mix-blend-mode:difference;
-      /* isolation removed for blending */
+      
       transform: translateZ(0);
     }
 
@@ -687,7 +674,7 @@
       z-index:-2;
       pointer-events:none;
       overflow:hidden;
-      display: flex; /* Añadido para mejor distribución */
+      display: flex; 
     }
 
     .vl{
@@ -716,7 +703,7 @@
       flex: 2;
     }
 
-    /* Carril central: escala real 9:16 sin cropping */
+    
     #vl-center {
       flex: 0 0 auto;
       width: calc(100vh * 9 / 16);
@@ -746,7 +733,7 @@
       z-index: 2;
     }
 
-    /* overlay eliminado — video sin oscurecer */
+    
   </style>
 </head>
 
