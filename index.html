@@ -193,7 +193,6 @@
       padding:2px 0;
     }
 
-    /* ✅ Microajuste (1): subir ligeramente tamaño del dropdown */
     .v-main{
       color:rgba(255,255,255,.92);
       font-size:13px;
@@ -520,9 +519,7 @@
     html[dir="rtl"], body{ overflow-x: hidden; }
     [dir="rtl"] .page{ overflow-x: clip; }
 
-    /* ─────────────────────────────────────────────────────────────
-       ✅ Microajuste (4): CMP simplificado (informativo, sin lock)
-       ───────────────────────────────────────────────────────────── */
+
     .mx-cmp{
       position:fixed;
       inset:0;
@@ -662,7 +659,6 @@
       .mx-cmp-row{ flex-direction:column; align-items:flex-start; }
     }
 
-    /* ── Video Background: 3 independent lanes ── */
     #mx-video-bg{
       position:fixed;
       inset:0;
@@ -708,7 +704,6 @@
       pointer-events:none;
     }
 
-    /* ✅ Microajuste (2): overlay un poco más presente para domesticar el fondo */
     #mx-video-bg::before{
       content:"";
       position:absolute;
@@ -721,7 +716,6 @@
 </head>
 
 <body>
-  <!-- Video background: 3 independent lanes -->
   <div id="mx-video-bg">
     <div class="vl vl-left" id="vl-left"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
     <div class="vl vl-center" id="vl-center"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
@@ -787,11 +781,11 @@
     <footer>
       <div class="footer-inner">
         <div class="footer-links">
-          <a href="terms.html" data-i18n="footer.terms">Terms</a>
-          <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
+          <a href="index.html" data-i18n="footer.terms">Terms</a>
+          <a href="index.html" data-i18n="footer.privacy">Privacy</a>
 
           <span style="display:inline-flex; align-items:center;">
-            <a href="cookies.html" data-i18n="footer.cookies">Cookies</a>
+            <a href="index.html" data-i18n="footer.cookies">Cookies</a>
             <button
               type="button"
               class="cookie-gear"
@@ -805,7 +799,7 @@
             </button>
           </span>
 
-          <a href="legal.html" data-i18n="footer.legal">Legal</a>
+          <a href="index.html" data-i18n="footer.legal">Legal</a>
         </div>
 
         <div class="copyright">
@@ -815,7 +809,6 @@
     </footer>
   </div>
 
-  <!-- ✅ CMP simplificado (informativo). Se abre SOLO con la rueda. -->
   <div class="mx-cmp" id="mx-cmp" role="dialog" aria-modal="true" aria-labelledby="mx-cmp-title">
     <div class="mx-cmp-panel">
       <div class="mx-cmp-head">
@@ -845,7 +838,6 @@
 
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
   <script>
-    /* ✅ Microajuste (4): CMP simplificado (sin decisiones, sin bloqueo) */
     (function(){
       const cmpEl = document.getElementById("mx-cmp");
       const btnClose = document.getElementById("mx-btn-close");
@@ -875,7 +867,6 @@
         if (e.key === "Escape" && cmpEl?.classList.contains("is-open")) closeCMP();
       });
 
-      // Close on backdrop click (click outside panel)
       cmpEl?.addEventListener("pointerdown", (e) => {
         if (e.target === cmpEl) closeCMP();
       });
@@ -886,13 +877,11 @@
         en: {
           "nav.about": "About",
           "nav.services": "Services",
-          "nav.verticals": "Verticals",
           "nav.contact": "Contact",
           "footer.terms": "Terms",
           "footer.privacy": "Privacy",
           "footer.cookies": "Cookies",
           "footer.legal": "Legal",
-          "card.test": "We’re working on it — coming back soon.",
           "cookie.prefs": "Cookie Preferences",
           "cmp.title": "Privacy & Cookies",
           "cmp.desc": "We respect your privacy. This site does not use advertising or tracking cookies. Only minimal technical storage may be used for security and core functionality (e.g., language preferences).",
@@ -902,13 +891,11 @@
         },
         zh: {
           "nav.about": "关于",
-          "nav.verticals": "领域",
           "nav.contact": "联系",
           "footer.terms": "条款",
           "footer.privacy": "隐私",
           "footer.cookies": "Cookies",
           "footer.legal": "法律",
-          "card.test": "我们正在建设中，敬请期待。",
           "cookie.prefs": "Cookie 偏好设置",
           "cmp.title": "隐私与 Cookies",
           "cmp.desc": "我们尊重您的隐私。本网站不使用广告或追踪 Cookies。仅会使用用于安全与核心功能的最少技术性存储（例如语言偏好）。",
@@ -917,14 +904,13 @@
           "cmp.close": "关闭"
         },
         es: {
-          "nav.about": "Info",
-          "nav.verticals": "Verticales",
+          "nav.about": "Sobre nosotros",
+          "nav.services": "Servicios",
           "nav.contact": "Contacto",
           "footer.terms": "Términos",
           "footer.privacy": "Privacidad",
           "footer.cookies": "Cookies",
           "footer.legal": "Legal",
-          "card.test": "Estamos trabajando — volvemos pronto.",
           "cookie.prefs": "Preferencias de cookies",
           "cmp.title": "Privacidad y cookies",
           "cmp.desc": "Respetamos su privacidad. Este sitio no utiliza cookies publicitarias ni de seguimiento. Solo puede usarse almacenamiento técnico mínimo para seguridad y funcionamiento básico (p. ej., preferencias de idioma).",
@@ -933,8 +919,8 @@
           "cmp.close": "Cerrar"
         },
         ca: {
-          "nav.about": "Info",
-          "nav.verticals": "Verticals",
+          "nav.about": "Sobre nosaltres",
+          "nav.services": "Serveis",
           "nav.contact": "Contacte",
           "footer.terms": "Termes",
           "footer.privacy": "Privacitat",
@@ -950,7 +936,7 @@
         },
         eu: {
           "nav.about": "Honi buruz",
-          "nav.verticals": "Bertikalak",
+          "nav.services": "Services",
           "nav.contact": "Kontaktua",
           "footer.terms": "Bald.",
           "footer.privacy": "Prib.",
@@ -966,7 +952,7 @@
         },
         fr: {
           "nav.about": "À propos",
-          "nav.verticals": "Verticales",
+          "nav.services": "Services",
           "nav.contact": "Contact",
           "footer.terms": "CGU",
           "footer.privacy": "Conf.",
@@ -1462,7 +1448,6 @@
       });
     })();
 
-    /* ── Video Background: 3 independent async lanes, 4 videos ── */
     (function(){
       const BASE = 'https://www.microstudiox.com/assets/';
       const VIDEOS = [BASE+'video1.mp4', BASE+'video2.mp4', BASE+'video3.mp4', BASE+'video4.mp4'];
