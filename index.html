@@ -377,7 +377,7 @@
     }
     .lang-pill:hover::after{ opacity:1; }
 
-    main{ display:none; }
+    main{ flex:1; display:block; }
 
     footer{
       padding:10px var(--px) 12px;
@@ -690,7 +690,7 @@
       .mx-btn{ flex:1 1 auto; text-align:center; }
       .mx-cmp-row{ flex-direction:column; align-items:flex-start; }
     }
-    /* ── Video Background ── */
+    /* ── Video Background: 3 independent lanes ── */
     #mx-video-bg{
       position:fixed;
       inset:0;
@@ -699,50 +699,59 @@
       overflow:hidden;
     }
 
-    #mx-video-bg video{
+    /* Each lane covers full viewport, clipped to its third */
+    .vl{
       position:absolute;
-      top:50%; left:50%;
-      transform: translate(-50%, -50%);
+      inset:0;
+      overflow:hidden;
+    }
+    .vl video{
+      position:absolute;
+      top:0; left:0;
       width:100%; height:100%;
-      object-fit:contain;
+      object-fit:cover;
       object-position:center center;
       opacity:0;
-      transition: opacity 1.4s ease;
+      transition: opacity 1.6s ease;
+    }
+    .vl.is-on video{ opacity:1; }
+
+    /* Clip each lane to its third of the screen */
+    .vl-left  { clip-path: inset(0 66.67% 0 0); }
+    .vl-center{ clip-path: inset(0 33.33% 0 33.33%); }
+    .vl-right { clip-path: inset(0 0 0 66.67%); }
+
+    /* Subtle seam lines between lanes */
+    .vl-left::after,
+    .vl-center::after{
+      content:"";
+      position:absolute;
+      top:0; bottom:0;
+      right:0;
+      width:1px;
+      background: rgba(255,255,255,.06);
+      pointer-events:none;
     }
 
-    /* clip masks for the 3 thirds */
-    #mx-video-bg.show-center video {
-      clip-path: inset(0 33.33% 0 33.33%);
-      opacity:1;
-    }
-    #mx-video-bg.show-left video {
-      clip-path: inset(0 66.66% 0 0);
-      opacity:1;
-    }
-    #mx-video-bg.show-right video {
-      clip-path: inset(0 0 0 66.66%);
-      opacity:1;
-    }
-
-    #mx-video-bg video::before{ content:none; }
-
-    /* dark overlay so text stays readable */
-    #mx-video-bg::after{
+    /* dark overlay */
+    #mx-video-bg::before{
       content:"";
       position:absolute;
       inset:0;
-      background: rgba(0,0,0,.52);
+      background: rgba(0,0,0,.22);
       pointer-events:none;
+      z-index:1;
     }
 
   </style>
 </head>
 
 <body>
-  <!-- Video background -->
+  <!-- Video background: 3 independent lanes -->
   <div id="mx-video-bg">
-    <video id="mx-bg-video" src="https://www.microstudiox.com/assets/video1.mp4"
-           muted playsinline preload="auto" aria-hidden="true"></video>
+    <div class="vl vl-left" id="vl-left"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
+    <div class="vl vl-center" id="vl-center"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
+    <div class="vl vl-right" id="vl-right"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
   </div>
 
   <div class="page" id="app-root">
@@ -1659,51 +1668,67 @@
       });
     })();
 
-    /* ── Video Background: full duration, 3s black, random third ── */
+    /* ── Video Background: 3 independent async lanes, 4 videos ── */
     (function(){
-      const wrap  = document.getElementById('mx-video-bg');
-      const video = document.getElementById('mx-bg-video');
-      if (!wrap || !video) return;
+      const BASE = 'https://www.microstudiox.com/assets/';
+      const VIDEOS = [BASE+'video1.mp4', BASE+'video2.mp4', BASE+'video3.mp4', BASE+'video4.mp4'];
 
-      const THIRDS = ['show-center', 'show-left', 'show-right'];
-      let lastThird = -1;
+      const LANES = [
+        { id: 'vl-left',   delay:    0 },
+        { id: 'vl-center', delay: 1800 },
+        { id: 'vl-right',  delay: 3400 }
+      ];
 
-      function randomThird(){
-        // Never repeat the same third twice in a row
+      // Track which video each lane is playing to avoid same video in adjacent lanes
+      const laneVideo = { 'vl-left': -1, 'vl-center': -1, 'vl-right': -1 };
+
+      function pickVideo(laneId) {
+        // Avoid repeating the video currently on this lane
+        const avoid = laneVideo[laneId];
         let idx;
-        do { idx = Math.floor(Math.random() * THIRDS.length); } while (idx === lastThird);
-        lastThird = idx;
-        return idx;
+        do { idx = Math.floor(Math.random() * VIDEOS.length); } while (idx === avoid && VIDEOS.length > 1);
+        laneVideo[laneId] = idx;
+        return VIDEOS[idx];
       }
 
-      function showThird(idx){
-        wrap.classList.remove('show-center','show-left','show-right');
-        void wrap.offsetWidth;
-        wrap.classList.add(THIRDS[idx]);
+      // Random pause between cycles: 1s–4s
+      function randPause() {
+        return 1000 + Math.random() * 3000;
       }
 
-      function hideVideo(){
-        wrap.classList.remove('show-center','show-left','show-right');
-      }
+      function runLane(laneId) {
+        const wrap = document.getElementById(laneId);
+        if (!wrap) return;
+        const video = wrap.querySelector('video');
+        if (!video) return;
 
-      function launch(){
+        const src = pickVideo(laneId);
+        video.src = src;
         video.currentTime = 0;
+
         const p = video.play();
-        if (p && p.catch) p.catch(()=>{});
-        showThird(randomThird());
+        if (p && p.catch) p.catch(() => {});
+        wrap.classList.add('is-on');
+
+        video.addEventListener('ended', function onEnd() {
+          video.removeEventListener('ended', onEnd);
+          // Fade out
+          wrap.classList.remove('is-on');
+          // Wait random pause then restart with a new video
+          setTimeout(() => runLane(laneId), randPause());
+        });
       }
 
-      // When video ends: hide → 3s pause → show new third from start
-      video.addEventListener('ended', function(){
-        hideVideo();
-        setTimeout(launch, 3000);
-      });
+      function boot() {
+        LANES.forEach(({ id, delay }) => {
+          setTimeout(() => runLane(id), delay);
+        });
+      }
 
-      // Boot
-      if (document.readyState === 'complete' || document.readyState === 'interactive'){
-        launch();
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        boot();
       } else {
-        document.addEventListener('DOMContentLoaded', launch);
+        document.addEventListener('DOMContentLoaded', boot);
       }
     })();
 
