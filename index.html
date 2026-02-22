@@ -1,629 +1,792 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>UNDER MAINTENANCE</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>microstudioX</title>
+<meta name="description" content="Creative technology studio. Vanilla. Haskell. No frameworks.">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000;
+    --fg: #fff;
+    --muted: rgba(255,255,255,.38);
+    --line: rgba(255,255,255,.08);
+    --mono: 'Fragment Mono', ui-monospace, monospace;
+  }
 
-  <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Permissions-Policy"
-        content="geolocation=(), microphone=(), camera=(), payment=(), usb=()">
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #000;
-      overflow: hidden;
-      color: #fff;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-                   "Liberation Mono", "Courier New", monospace;
-    }
-    canvas { display:block; width:100vw; height:100vh; }
+  html { scroll-behavior: smooth; }
 
-    .ui-layer { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--mono);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+    cursor: none;
+    overflow-x: hidden;
+  }
 
-    .top-bar {
-      position: absolute; top: 0; left: 0; right: 0;
-      padding: 14px 18px;
-      display: flex; justify-content: flex-start;
-      background: rgba(0,0,0,0.78);
-      border-bottom: 1px solid rgba(255,255,255,0.10);
-      backdrop-filter: blur(10px);
-    }
+  /* ── Custom cursor ── */
+  #cursor {
+    position: fixed;
+    top: 0; left: 0;
+    width: 6px; height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 120ms ease, height 120ms ease, opacity 120ms ease;
+    mix-blend-mode: difference;
+  }
+  #cursor.expanded { width: 40px; height: 40px; }
 
-    .brand {
-      font-size: 12px;
-      letter-spacing: 4px;
-      font-weight: 900;
-      opacity: 0.92;
-      color: rgba(255,255,255,0.92);
-      mix-blend-mode: difference;
-      text-shadow: none;
-    }
+  /* ── Canvas ── */
+  #canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
 
-    .footer-bar {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 14px 18px 12px;
-      display: flex; flex-direction: column; align-items: center;
-      gap: 8px;
-      background: rgba(0,0,0,0.78);
-      border-top: 1px solid rgba(255,255,255,0.10);
-      backdrop-filter: blur(10px);
-      pointer-events: auto;
-    }
+  /* ── Nav ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 28px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    .footer-links {
-      display: flex; gap: 22px;
-      font-size: 11px; letter-spacing: 2px;
-      opacity: 0.65;
-    }
-    .footer-links a {
-      color:#fff; text-decoration:none;
-      opacity:0.75; pointer-events:auto;
-    }
-    .footer-links a:hover { opacity:1; text-decoration: underline; }
+  .brand {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--fg);
+  }
 
-    .copyright {
-      font-size: 9px;
-      letter-spacing: 1px;
-      opacity: 0.45;
-      text-align: center;
-      line-height: 1.6;
-    }
+  .brand .X { color: #fff; }
 
-    /* ✅ Link style (sobrio, same-window) */
-    .copyright a{
-      color: rgba(255,255,255,0.75);
-      text-decoration: none;
-      pointer-events: auto;
-    }
-    .copyright a:hover{
-      opacity: 1;
-      text-decoration: underline;
-    }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
 
-    @media (max-width: 600px) {
-      .brand { font-size: 11px; letter-spacing: 3px; }
-      .footer-links { flex-wrap: wrap; justify-content:center; gap: 14px; }
-    }
-  </style>
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+  .nav-links a:hover { color: var(--fg); }
+
+  /* ── Sections ── */
+  section {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* ── Hero ── */
+  #hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 40px 60px;
+  }
+
+  .hero-label {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+
+  .hero-title {
+    font-size: clamp(52px, 9vw, 130px);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    overflow: hidden;
+  }
+
+  .hero-title .line {
+    display: block;
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  .hero-title .line:nth-child(1) { animation: slideUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s forwards; }
+  .hero-title .line:nth-child(2) { animation: slideUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.22s forwards; }
+  .hero-title .line:nth-child(3) { animation: slideUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.34s forwards; }
+
+  .hero-title .X-mark {
+    color: #fff;
+    position: relative;
+    display: inline-block;
+  }
+  .hero-title .X-mark::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0; right: 0;
+    height: 2px;
+    background: #fff;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: scaleIn 0.5s ease 1s forwards;
+  }
+
+  .hero-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 48px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.7s forwards;
+  }
+
+  .hero-sub {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    line-height: 2;
+    text-transform: uppercase;
+    max-width: 280px;
+  }
+
+  .scroll-hint {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .scroll-hint::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--muted);
+    animation: expandLine 0.8s ease 1.2s both;
+  }
+
+  /* ── About ── */
+  #about {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 40px;
+    border-top: 1px solid var(--line);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 80px;
+    width: 100%;
+    max-width: 1100px;
+  }
+
+  .section-label {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 6px;
+  }
+
+  .about-text {
+    font-size: clamp(18px, 2.4vw, 28px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    font-weight: 400;
+    color: rgba(255,255,255,.88);
+  }
+
+  .about-text em {
+    font-style: normal;
+    color: #fff;
+  }
+
+  .about-detail {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 48px;
+  }
+
+  .detail-item {
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+
+  .detail-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .detail-value {
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,.75);
+    line-height: 1.8;
+  }
+
+  /* ── Services ── */
+  #services {
+    padding: 120px 40px;
+    border-top: 1px solid var(--line);
+  }
+
+  .services-header {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 80px;
+    margin-bottom: 80px;
+  }
+
+  .services-title {
+    font-size: clamp(32px, 4vw, 52px);
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    line-height: 1.1;
+    color: rgba(255,255,255,.88);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .service-item {
+    background: var(--bg);
+    padding: 40px 32px;
+    transition: background 200ms ease;
+    cursor: none;
+  }
+  .service-item:hover { background: rgba(255,255,255,.03); }
+
+  .service-num {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .service-name {
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+    color: var(--fg);
+  }
+
+  .service-desc {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    line-height: 1.9;
+  }
+
+  .service-tags {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    font-size: 8px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    padding: 4px 10px;
+  }
+
+  /* ── Contact ── */
+  #contact {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 40px;
+    border-top: 1px solid var(--line);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+
+  .contact-title {
+    font-size: clamp(40px, 6vw, 80px);
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    line-height: 0.95;
+    color: rgba(255,255,255,.88);
+  }
+
+  .contact-link {
+    display: inline-block;
+    font-size: clamp(14px, 1.8vw, 20px);
+    letter-spacing: 0.06em;
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,.2);
+    padding-bottom: 4px;
+    transition: border-color 200ms ease;
+    margin-top: 32px;
+  }
+  .contact-link:hover { border-color: var(--fg); }
+
+  .contact-note {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 20px;
+    line-height: 2;
+  }
+
+  /* ── Footer ── */
+  footer {
+    position: relative;
+    z-index: 10;
+    padding: 24px 40px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-copy {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .footer-parent {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+  .footer-parent:hover { color: var(--fg); }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(100%); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scaleIn {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  @keyframes expandLine {
+    from { width: 0; opacity: 0; }
+    to   { width: 40px; opacity: 1; }
+  }
+
+  /* ── Intersection observer reveal ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .nav-links { gap: 20px; }
+    #hero { padding: 0 24px 48px; }
+    .hero-bottom { flex-direction: column; align-items: flex-start; gap: 24px; }
+    #about, #services, #contact { padding: 80px 24px; }
+    .about-grid, .services-header, .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .about-detail { grid-template-columns: 1fr; }
+    footer { padding: 20px 24px; flex-direction: column; gap: 12px; align-items: flex-start; }
+  }
+</style>
 </head>
-
 <body>
-  <canvas id="view"></canvas>
 
-  <div class="ui-layer">
-    <div class="top-bar">
-      <div class="brand">UNDER MAINTENANCE</div>
-    </div>
+<div id="cursor"></div>
+<canvas id="canvas"></canvas>
 
-    <footer class="footer-bar">
-      <div class="copyright">
-        © 2023–2026
-        <a href="https://www.microretailx.com">MICRORETAILX LLC (DELAWARE)</a>
-        — ALL RIGHTS RESERVED — MICROSTUDIOX: NON-COMMERCIAL R&amp;D PROJECTS
-      </div>
-    </footer>
+<!-- Nav -->
+<nav>
+  <a href="#hero" class="brand">microstudio<span class="X">X</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#services">services</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <div class="hero-label">creative technology studio</div>
+  <h1 class="hero-title">
+    <span class="line">micro</span>
+    <span class="line">studio</span>
+    <span class="line"><span class="X-mark">X</span></span>
+  </h1>
+  <div class="hero-bottom">
+    <p class="hero-sub">
+      vanilla.<br>
+      haskell.<br>
+      no frameworks.
+    </p>
+    <div class="scroll-hint">scroll</div>
   </div>
+</section>
 
-  <script>
-  (() => {
-    "use strict";
+<!-- About -->
+<section id="about">
+  <div class="about-grid reveal">
+    <div class="section-label">about</div>
+    <div>
+      <p class="about-text">
+        microstudioX is the creative technology arm of <em>MICRORETAILX LLC</em>. 
+        We build interfaces that demand to be noticed — written in pure vanilla and Haskell, 
+        without abstraction layers, without shortcuts.
+      </p>
+      <div class="about-detail">
+        <div class="detail-item">
+          <div class="detail-label">stack</div>
+          <div class="detail-value">Vanilla JS · CSS · HTML<br>Haskell · GLSL</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">approach</div>
+          <div class="detail-value">No frameworks.<br>No dependencies.<br>Pure craft.</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">primary client</div>
+          <div class="detail-value">MICRORETAILX LLC<br>& group verticals</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">external work</div>
+          <div class="detail-value">Selective.<br>By introduction only.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    const view = document.getElementById("view");
-    const vctx = view.getContext("2d", { alpha: false });
+<!-- Services -->
+<section id="services">
+  <div class="services-header reveal">
+    <div class="section-label">services</div>
+    <h2 class="services-title">what<br>we build</h2>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-item">
+      <div class="service-num">01</div>
+      <div class="service-name">interface engineering</div>
+      <div class="service-desc">
+        Production-grade web interfaces built from first principles. 
+        No framework overhead. Maximum performance.
+      </div>
+      <div class="service-tags">
+        <span class="tag">vanilla js</span>
+        <span class="tag">css</span>
+        <span class="tag">html</span>
+      </div>
+    </div>
+    <div class="service-item">
+      <div class="service-num">02</div>
+      <div class="service-name">creative coding</div>
+      <div class="service-desc">
+        WebGL shaders, generative systems, motion design. 
+        Code as visual language, written at the metal.
+      </div>
+      <div class="service-tags">
+        <span class="tag">webgl</span>
+        <span class="tag">glsl</span>
+        <span class="tag">canvas</span>
+      </div>
+    </div>
+    <div class="service-item">
+      <div class="service-num">03</div>
+      <div class="service-name">functional systems</div>
+      <div class="service-desc">
+        Backend logic and data pipelines in Haskell. 
+        Type-safe, correct by construction, built to last.
+      </div>
+      <div class="service-tags">
+        <span class="tag">haskell</span>
+        <span class="tag">functional</span>
+        <span class="tag">type-safe</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-    const simCanvas = document.createElement("canvas");
-    const sctx = simCanvas.getContext("2d", { willReadFrequently: true });
+<!-- Contact -->
+<section id="contact">
+  <div class="contact-grid reveal">
+    <div class="section-label">contact</div>
+    <div>
+      <h2 class="contact-title">let's<br>talk</h2>
+      <a href="mailto:studio@microretailx.com" class="contact-link">studio@microretailx.com</a>
+      <p class="contact-note">
+        External work is selective.<br>
+        We respond to serious inquiries only.
+      </p>
+    </div>
+  </div>
+</section>
 
-    const UA = navigator.userAgent || "";
-    const IS_IOS =
-      /iPhone|iPad|iPod/i.test(UA) ||
-      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    const IS_MOBILE = /Mobi|Android|iPhone|iPad/i.test(UA);
+<!-- Footer -->
+<footer>
+  <span class="footer-copy">© 2025 microstudioX — MICRORETAILX LLC</span>
+  <a href="https://www.microretailx.com" class="footer-parent" target="_blank" rel="noopener">microretailX ↗</a>
+</footer>
 
-    const clamp = (v,a,b)=> Math.max(a, Math.min(b, v));
-    const lerp  = (a,b,t)=> a + (b-a)*t;
-    const ease  = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2;
-    const easeInOut = t => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2)/2;
+<script>
+(function(){
+  'use strict';
 
-    const DPR_CAP = IS_IOS ? 1.6 : 2;
-    let dpr = Math.min(DPR_CAP, window.devicePixelRatio || 1);
+  // ── Cursor ──
+  const cursor = document.getElementById('cursor');
+  let mx = -100, my = -100;
+  let cx = -100, cy = -100;
 
-    let W=0, H=0;
-    let simW=0, simH=0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX;
+    my = e.clientY;
+  });
 
-    let trailA, trailB;
-    let xField;
-    let imgData, img8;
-    let agents = [];
-    let foods = [];
-    let tPrev = performance.now();
-    let frame = 0;
+  document.querySelectorAll('a, .service-item').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('expanded'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('expanded'));
+  });
 
-    const INTRO = {
-      start: performance.now(),
-      durIn: 1800,
-      durFlash: 320,
-      durOut: 900,
-      get active() {
-        const t = performance.now() - this.start;
-        return t < (this.durIn + this.durFlash + this.durOut);
-      }
+  function animateCursor() {
+    cx += (mx - cx) * 0.18;
+    cy += (my - cy) * 0.18;
+    cursor.style.transform = `translate(${cx - cursor.offsetWidth/2}px, ${cy - cursor.offsetHeight/2}px)`;
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  // ── WebGL velocity lines ──
+  const canvas = document.getElementById('canvas');
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+  if (!gl) return;
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const vsSource = `
+    attribute vec2 a_pos;
+    attribute float a_alpha;
+    varying float v_alpha;
+    void main(){
+      v_alpha = a_alpha;
+      gl_Position = vec4(a_pos, 0.0, 1.0);
+    }
+  `;
+
+  const fsSource = `
+    precision mediump float;
+    varying float v_alpha;
+    void main(){
+      gl_FragColor = vec4(1.0, 1.0, 1.0, v_alpha);
+    }
+  `;
+
+  function compileShader(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compileShader(gl.VERTEX_SHADER, vsSource));
+  gl.attachShader(prog, compileShader(gl.FRAGMENT_SHADER, fsSource));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+
+  const aPosLoc   = gl.getAttribLocation(prog, 'a_pos');
+  const aAlphaLoc = gl.getAttribLocation(prog, 'a_alpha');
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+  // Line particles
+  const N = 120;
+  const lines = [];
+
+  function rand(a, b) { return a + Math.random() * (b - a); }
+
+  function createLine() {
+    // Direction — predominantly horizontal with slight angle (velocity feel)
+    const angle = rand(-0.15, 0.15) * Math.PI; // mostly horizontal
+    const speed = rand(0.004, 0.016);
+    const len   = rand(0.04, 0.22);
+    const x     = rand(-1.2, 0.4); // start off left edge mostly
+    const y     = rand(-1.0, 1.0);
+    return {
+      x, y,
+      dx: Math.cos(angle) * speed,
+      dy: Math.sin(angle) * speed * 0.3,
+      len,
+      alpha: rand(0.04, 0.18),
+      life: 0,
+      maxLife: rand(0.3, 1.0),
     };
+  }
 
-    let lastMouseFoodAt = 0;
+  for (let i = 0; i < N; i++) {
+    const l = createLine();
+    l.life = Math.random() * l.maxLife; // stagger start
+    lines.push(l);
+  }
 
-    const CFG = {
-      gridMax: IS_MOBILE ? 540 : 820,
+  const posData   = new Float32Array(N * 4); // 2 verts × 2 coords
+  const alphaData = new Float32Array(N * 2); // 2 verts × 1 alpha
 
-      agentCount: IS_MOBILE ? 6000 : 12000,
-      step: IS_MOBILE ? 0.90 : 1.05,
+  const posBuf   = gl.createBuffer();
+  const alphaBuf = gl.createBuffer();
 
-      sensorDist: IS_MOBILE ? 6.2 : 7.8,
-      sensorAngle: 0.55,
-      turnSpeed: 0.34,
+  let t = 0;
 
-      deposit: 0.94,
-      decay: IS_MOBILE ? 0.973 : 0.979,
-      diffuseEvery: 2,
-      diffuseMix: 0.42,
+  // Mouse influence
+  let mouseNX = 0, mouseNY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseNX =  (e.clientX / window.innerWidth)  * 2 - 1;
+    mouseNY = -(e.clientY / window.innerHeight) * 2 + 1;
+  });
 
-      xBias: 0.82,
-      xWidthPx: IS_MOBILE ? 3.6 : 4.6,
+  function tick() {
+    t += 0.016;
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
-      foodRadius: IS_MOBILE ? 18 : 22,
-      foodStrength: 1.55,
-      foodLifeMs: 1300,
-      mouseFoodEveryMs: IS_MOBILE ? 42 : 28,
+    for (let i = 0; i < N; i++) {
+      const l = lines[i];
+      l.life += 0.016;
 
-      xInk: 0.42,
-      crush: 0.030,
-    };
+      // subtle mouse attraction — lines drift slightly toward cursor
+      const dxM = mouseNX - l.x;
+      const dyM = mouseNY - l.y;
+      l.x += l.dx + dxM * 0.00008;
+      l.y += l.dy + dyM * 0.00004;
 
-    function resize() {
-      dpr = Math.min(DPR_CAP, window.devicePixelRatio || 1);
-      W = window.innerWidth | 0;
-      H = window.innerHeight | 0;
+      // lifecycle alpha — fade in/out
+      const lifeRatio = l.life / l.maxLife;
+      const fade = lifeRatio < 0.15
+        ? lifeRatio / 0.15
+        : lifeRatio > 0.75
+          ? 1 - (lifeRatio - 0.75) / 0.25
+          : 1.0;
 
-      view.width  = (W * dpr) | 0;
-      view.height = (H * dpr) | 0;
-      view.style.width  = W + "px";
-      view.style.height = H + "px";
-      vctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const a = l.alpha * fade;
 
-      const maxSide = CFG.gridMax;
-      const aspect = W / Math.max(1, H);
-      if (W >= H) {
-        simW = maxSide;
-        simH = Math.max(160, (maxSide / aspect) | 0);
-      } else {
-        simH = maxSide;
-        simW = Math.max(160, (maxSide * aspect) | 0);
-      }
+      const x1 = l.x;
+      const y1 = l.y;
+      const x2 = l.x - l.len * Math.cos(Math.atan2(l.dy, l.dx));
+      const y2 = l.y - l.len * Math.sin(Math.atan2(l.dy, l.dx));
 
-      simCanvas.width = simW;
-      simCanvas.height = simH;
+      posData[i*4+0] = x1; posData[i*4+1] = y1;
+      posData[i*4+2] = x2; posData[i*4+3] = y2;
+      alphaData[i*2+0] = a;
+      alphaData[i*2+1] = 0.0; // tail fades to zero
 
-      const n = simW * simH;
-      trailA = new Float32Array(n);
-      trailB = new Float32Array(n);
-      xField = new Float32Array(n);
-
-      imgData = sctx.createImageData(simW, simH);
-      img8 = imgData.data;
-
-      buildXField();
-      seedAgents(true);
-
-      inkXLine(CFG.xInk);
-    }
-
-    window.addEventListener("resize", resize);
-
-    function idx(x, y) { return x + y * simW; }
-
-    function buildXField() {
-      const w = simW, h = simH;
-      const a = (h - 1) / Math.max(1, (w - 1));
-      const inv = 1 / Math.sqrt(1 + a*a);
-
-      const sigma = CFG.xWidthPx;
-      const sigma2 = sigma * sigma;
-
-      for (let y=0; y<h; y++) {
-        for (let x=0; x<w; x++) {
-          const d1 = Math.abs(a*x - y) * inv;
-          const d2 = Math.abs(a*x + y - (h - 1)) * inv;
-          const d = Math.min(d1, d2);
-          const v = Math.exp(-(d*d) / (2*sigma2));
-          xField[idx(x,y)] = v;
-        }
+      // Reset when out of bounds or life exceeded
+      if (l.life >= l.maxLife || l.x > 1.4 || l.y > 1.4 || l.y < -1.4) {
+        const nl = createLine();
+        nl.x = rand(-1.4, -0.8); // re-enter from left
+        Object.assign(lines[i], nl);
+        lines[i].life = 0;
       }
     }
 
-    function seedAgents(resetTrails=false) {
-      if (resetTrails) { trailA.fill(0); trailB.fill(0); }
-      agents.length = 0;
+    // Upload position data
+    gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, posData, gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(aPosLoc);
+    gl.vertexAttribPointer(aPosLoc, 2, gl.FLOAT, false, 0, 0);
 
-      const n = CFG.agentCount;
-      for (let i=0; i<n; i++) {
-        let x, y, tries=0;
-        while (true) {
-          x = (Math.random() * simW) | 0;
-          y = (Math.random() * simH) | 0;
-          const xf = xField[idx(x,y)];
-          if (Math.random() < 0.18 + 0.82*xf || tries++ > 10) break;
-        }
-        agents.push({ x: x + Math.random(), y: y + Math.random(), a: Math.random() * Math.PI * 2 });
+    // Upload alpha data — need to interleave per-vertex
+    // We draw each line as a separate draw call to handle per-vertex alpha cleanly
+    // Actually batch with a combined buffer approach:
+    gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, alphaData, gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(aAlphaLoc);
+    gl.vertexAttribPointer(aAlphaLoc, 1, gl.FLOAT, false, 0, 0);
+
+    // Draw all lines at once
+    gl.drawArrays(gl.LINES, 0, N * 2);
+
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  // ── Intersection Observer reveals ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
       }
-    }
-
-    function depositAt(f, x, y, amt) {
-      const xi = x | 0, yi = y | 0;
-      if (xi < 0 || yi < 0 || xi >= simW || yi >= simH) return;
-      const k = idx(xi, yi);
-      f[k] = Math.min(1.0, f[k] + amt);
-    }
-
-    function sampleField(f, x, y) {
-      const xi = x | 0, yi = y | 0;
-      if (xi < 0 || yi < 0 || xi >= simW || yi >= simH) return 0;
-      return f[idx(xi, yi)];
-    }
-
-    function diffuse(src, dst, mix) {
-      const w=simW, h=simH;
-      for (let y=1; y<h-1; y++) {
-        const row = y*w;
-        for (let x=1; x<w-1; x++) {
-          const k = row + x;
-          const v =
-            src[k] +
-            src[k-1] + src[k+1] +
-            src[k-w] + src[k+w] +
-            src[k-w-1] + src[k-w+1] +
-            src[k+w-1] + src[k+w+1];
-          const blur = v / 9;
-          dst[k] = src[k]*(1-mix) + blur*mix;
-        }
-      }
-      for (let x=0; x<w; x++) { dst[x] = src[x]; dst[x + (h-1)*w] = src[x + (h-1)*w]; }
-      for (let y=0; y<h; y++) { dst[y*w] = src[y*w]; dst[(w-1) + y*w] = src[(w-1) + y*w]; }
-    }
-
-    function inkXLine(amount) {
-      const w=simW, h=simH;
-      for (let y=0; y<h; y++) {
-        for (let x=0; x<w; x++) {
-          const xf = xField[idx(x,y)];
-          if (xf > 0.18) trailA[idx(x,y)] = Math.max(trailA[idx(x,y)], amount * xf);
-        }
-      }
-    }
-
-    function snapToX(x, y) {
-      const w = simW, h = simH;
-      const a = (h - 1) / Math.max(1, (w - 1));
-
-      const y1 = a * x;
-      const y2 = (h - 1) - a * x;
-      const d1 = Math.abs(y - y1);
-      const d2 = Math.abs(y - y2);
-
-      if (d1 < d2) return { x, y: y1 };
-      return { x, y: y2 };
-    }
-
-    function addMouseFood(clientX, clientY) {
-      const now = performance.now();
-      if (now - lastMouseFoodAt < CFG.mouseFoodEveryMs) return;
-      lastMouseFoodAt = now;
-
-      const el = document.elementFromPoint(clientX, clientY);
-      const a = el && el.closest ? el.closest("a") : null;
-      if (a) return;
-
-      let fx = clamp((clientX / W) * simW, 0, simW-1);
-      let fy = clamp((clientY / H) * simH, 0, simH-1);
-
-      const s = snapToX(fx, fy);
-      fx = clamp(s.x, 0, simW-1);
-      fy = clamp(s.y, 0, simH-1);
-
-      foods.push({ x: fx, y: fy, life: CFG.foodLifeMs, amp: 1.0 });
-      depositAt(trailA, fx, fy, 0.55);
-    }
-
-    window.addEventListener("pointermove", (e) => {
-      if (IS_MOBILE) return;
-      addMouseFood(e.clientX, e.clientY);
-    }, { passive:true });
-
-    window.addEventListener("pointerdown", (e) => {
-      const el = document.elementFromPoint(e.clientX, e.clientY);
-      const a = el && el.closest ? el.closest("a") : null;
-      if (a) return;
-
-      let fx = clamp((e.clientX / W) * simW, 0, simW-1);
-      let fy = clamp((e.clientY / H) * simH, 0, simH-1);
-      const s = snapToX(fx, fy);
-      fx = clamp(s.x, 0, simW-1);
-      fy = clamp(s.y, 0, simH-1);
-
-      foods.push({ x: fx, y: fy, life: CFG.foodLifeMs * 1.8, amp: 1.0 });
-      depositAt(trailA, fx, fy, 0.9);
-    }, { passive:true });
-
-    function stepSim(dtMs) {
-      for (let i=foods.length-1; i>=0; i--) {
-        foods[i].life -= dtMs;
-        if (foods[i].life <= 0) foods.splice(i, 1);
-        else foods[i].amp = foods[i].life / (CFG.foodLifeMs * 1.0);
-      }
-
-      const step = CFG.step;
-      const sDist = CFG.sensorDist;
-      const sAng  = CFG.sensorAngle;
-      const turn  = CFG.turnSpeed;
-
-      const xBias = CFG.xBias;
-      const foodStr = CFG.foodStrength;
-
-      for (let i=0; i<agents.length; i++) {
-        const p = agents[i];
-
-        const ca = Math.cos(p.a), sa = Math.sin(p.a);
-        const la = p.a - sAng, ra = p.a + sAng;
-
-        const fx = p.x + ca * sDist, fy = p.y + sa * sDist;
-        const lx = p.x + Math.cos(la) * sDist, ly = p.y + Math.sin(la) * sDist;
-        const rx = p.x + Math.cos(ra) * sDist, ry = p.y + Math.sin(ra) * sDist;
-
-        let fF = sampleField(trailA, fx, fy);
-        let fL = sampleField(trailA, lx, ly);
-        let fR = sampleField(trailA, rx, ry);
-
-        fF += xBias * sampleField(xField, fx, fy);
-        fL += xBias * sampleField(xField, lx, ly);
-        fR += xBias * sampleField(xField, rx, ry);
-
-        if (foods.length) {
-          let addF=0, addL=0, addR=0;
-          const rr = CFG.foodRadius;
-          const rr2 = 2*rr*rr;
-          for (let j=0; j<foods.length; j++) {
-            const fd = foods[j];
-            const amp = fd.amp;
-
-            const dxF = fx - fd.x, dyF = fy - fd.y;
-            const dxL = lx - fd.x, dyL = ly - fd.y;
-            const dxR = rx - fd.x, dyR = ry - fd.y;
-
-            addF += Math.exp(-(dxF*dxF + dyF*dyF) / rr2) * amp;
-            addL += Math.exp(-(dxL*dxL + dyL*dyL) / rr2) * amp;
-            addR += Math.exp(-(dxR*dxR + dyR*dyR) / rr2) * amp;
-          }
-          fF += foodStr * addF;
-          fL += foodStr * addL;
-          fR += foodStr * addR;
-        }
-
-        if (fF > fL && fF > fR) {
-          // straight
-        } else if (fL > fR) {
-          p.a -= turn;
-        } else if (fR > fL) {
-          p.a += turn;
-        } else {
-          p.a += (Math.random() - 0.5) * 0.15;
-        }
-
-        p.x += Math.cos(p.a) * step;
-        p.y += Math.sin(p.a) * step;
-
-        if (p.x < 0) p.x += simW; else if (p.x >= simW) p.x -= simW;
-        if (p.y < 0) p.y += simH; else if (p.y >= simH) p.y -= simH;
-
-        depositAt(trailA, p.x, p.y, CFG.deposit);
-      }
-
-      const d = CFG.decay;
-      for (let k=0; k<trailA.length; k++) trailA[k] *= d;
-
-      if ((frame % CFG.diffuseEvery) === 0) {
-        diffuse(trailA, trailB, CFG.diffuseMix);
-        const tmp = trailA; trailA = trailB; trailB = tmp;
-      }
-
-      frame++;
-    }
-
-    function renderMaze() {
-      const n = simW * simH;
-
-      for (let k=0, p=0; k<n; k++, p+=4) {
-        const t = trailA[k];
-        const v = t <= 0 ? 0 : Math.pow(clamp(t, 0, 1), 0.62);
-
-        const xf = xField[k];
-        const c = clamp(v * (0.92 + 0.22*xf), 0, 1);
-
-        const r = clamp(  8 + c*110*0.80, 0, 255) | 0;
-        const g = clamp( 35 + c*250*1.05, 0, 255) | 0;
-        const b = clamp( 55 + c*255*1.15, 0, 255) | 0;
-
-        const crush = c < CFG.crush ? 0 : 1;
-        img8[p+0] = crush ? r : 0;
-        img8[p+1] = crush ? g : 0;
-        img8[p+2] = crush ? b : 0;
-        img8[p+3] = 255;
-      }
-
-      sctx.putImageData(imgData, 0, 0);
-
-      vctx.imageSmoothingEnabled = true;
-      vctx.fillStyle = "#000";
-      vctx.fillRect(0,0,W,H);
-      vctx.drawImage(simCanvas, 0, 0, simW, simH, 0, 0, W, H);
-    }
-
-    function drawIntro(now) {
-      const t = now - INTRO.start;
-      const T1 = INTRO.durIn;
-      const T2 = INTRO.durFlash;
-      const T3 = INTRO.durOut;
-
-      vctx.fillStyle = "#000";
-      vctx.fillRect(0,0,W,H);
-
-      const cx = W/2, cy = H/2;
-
-      function strokeX(alpha, w1, w2) {
-        vctx.save();
-        vctx.globalCompositeOperation = "lighter";
-        vctx.lineCap = "round";
-
-        vctx.strokeStyle = `rgba(40,220,255,${alpha*0.22})`;
-        vctx.lineWidth = w2;
-        vctx.beginPath();
-        vctx.moveTo(0,0); vctx.lineTo(W,H);
-        vctx.moveTo(W,0); vctx.lineTo(0,H);
-        vctx.stroke();
-
-        vctx.strokeStyle = `rgba(255,255,255,${alpha})`;
-        vctx.lineWidth = w1;
-        vctx.beginPath();
-        vctx.moveTo(0,0); vctx.lineTo(W,H);
-        vctx.moveTo(W,0); vctx.lineTo(0,H);
-        vctx.stroke();
-        vctx.restore();
-      }
-
-      const corners = [
-        {x:0,y:0}, {x:W,y:0}, {x:0,y:H}, {x:W,y:H}
-      ];
-
-      if (t < T1) {
-        const p = easeInOut(t / T1);
-
-        vctx.save();
-        vctx.globalCompositeOperation = "lighter";
-        vctx.lineCap = "round";
-
-        for (let i=0;i<corners.length;i++){
-          const o = corners[i];
-          const hx = lerp(o.x, cx, p);
-          const hy = lerp(o.y, cy, p);
-
-          const grad = vctx.createLinearGradient(o.x, o.y, hx, hy);
-          grad.addColorStop(0, `rgba(255,255,255,${0.15*p})`);
-          grad.addColorStop(0.7, `rgba(255,255,255,${0.45*p})`);
-          grad.addColorStop(1, `rgba(255,255,255,${0.75})`);
-
-          vctx.strokeStyle = grad;
-          vctx.lineWidth = IS_MOBILE ? 2.8 : 3.4;
-          vctx.beginPath();
-          vctx.moveTo(o.x,o.y);
-          vctx.lineTo(hx,hy);
-          vctx.stroke();
-        }
-        vctx.restore();
-        return;
-      }
-
-      const t2 = t - T1;
-      if (t2 < T2) {
-        const flashP = t2 / T2;
-        const intensity = Math.sin(flashP * Math.PI);
-
-        strokeX(0.85, IS_MOBILE ? 4.0 : 5.2, IS_MOBILE ? 14.0 : 18.0);
-
-        vctx.save();
-        vctx.globalCompositeOperation = "lighter";
-
-        const rr = Math.min(W,H) * (0.35 + 0.25*intensity);
-        const g = vctx.createRadialGradient(cx,cy,0,cx,cy,rr);
-        g.addColorStop(0, `rgba(255,255,255,${0.95*intensity})`);
-        g.addColorStop(0.15, `rgba(255,255,255,${0.75*intensity})`);
-        g.addColorStop(0.35, `rgba(255,255,255,${0.45*intensity})`);
-        g.addColorStop(0.65, `rgba(255,255,255,${0.15*intensity})`);
-        g.addColorStop(1, "rgba(0,0,0,0)");
-        vctx.fillStyle = g;
-        vctx.beginPath();
-        vctx.arc(cx,cy,rr,0,Math.PI*2);
-        vctx.fill();
-
-        for (let i=0; i<4; i++) {
-          const corner = corners[i];
-          const rayGrad = vctx.createLinearGradient(cx, cy, corner.x, corner.y);
-          rayGrad.addColorStop(0, `rgba(255,255,255,${0.65*intensity})`);
-          rayGrad.addColorStop(0.5, `rgba(255,255,255,${0.25*intensity})`);
-          rayGrad.addColorStop(1, "rgba(255,255,255,0)");
-
-          vctx.strokeStyle = rayGrad;
-          vctx.lineWidth = (IS_MOBILE ? 2.0 : 2.8) * intensity;
-          vctx.beginPath();
-          vctx.moveTo(cx, cy);
-          vctx.lineTo(corner.x, corner.y);
-          vctx.stroke();
-        }
-
-        vctx.restore();
-
-        inkXLine(0.75 * intensity);
-        return;
-      }
-
-      const t3 = t2 - T2;
-      const p3 = ease(clamp(t3 / T3, 0, 1));
-
-      renderMaze();
-
-      const fadeAlpha = (1 - p3);
-      strokeX(fadeAlpha * 0.40, IS_MOBILE ? 3.6 : 4.4, IS_MOBILE ? 11.5 : 15.0);
-
-      if (p3 < 0.75) {
-        vctx.save();
-        vctx.globalCompositeOperation = "lighter";
-        const rr = Math.min(W,H) * 0.18 * (1-p3);
-        const g = vctx.createRadialGradient(cx,cy,0,cx,cy,rr);
-        g.addColorStop(0, `rgba(255,255,255,${0.30*(1-p3)})`);
-        g.addColorStop(0.5, `rgba(255,255,255,${0.10*(1-p3)})`);
-        g.addColorStop(1, "rgba(0,0,0,0)");
-        vctx.fillStyle = g;
-        vctx.beginPath();
-        vctx.arc(cx,cy,rr,0,Math.PI*2);
-        vctx.fill();
-        vctx.restore();
-      }
-
-      if (p3 < 0.30) {
-        for (let k=0; k<trailA.length; k++) trailA[k] *= 0.985;
-      }
-    }
-
-    function loop(now) {
-      const dt = clamp(now - tPrev, 8, 40);
-      tPrev = now;
-
-      stepSim(dt);
-
-      if (INTRO.active) drawIntro(now);
-      else renderMaze();
-
-      requestAnimationFrame(loop);
-    }
-
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "r" || e.key === "R") { seedAgents(true); inkXLine(CFG.xInk); }
     });
+  }, { threshold: 0.12 });
 
-    resize();
-    requestAnimationFrame(loop);
-  })();
-  </script>
+  reveals.forEach(el => observer.observe(el));
+
+})();
+</script>
 </body>
 </html>
