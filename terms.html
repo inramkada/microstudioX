@@ -685,7 +685,7 @@
       min-height: 100%;
       width: auto;
       height: auto;
-      object-fit: cover; /* Cambiado de 'none' para que rellene el carril */
+      object-fit: contain;
       opacity:0;
       transition: opacity 1.6s ease;
     }
@@ -695,7 +695,7 @@
     }
 
     .vl.is-on video{ 
-      opacity: 0.45; /* Ajustado ligeramente la opacidad para que no opaque el contenido */
+      opacity: 1;
     }
 
     .vl::after {
@@ -709,14 +709,7 @@
       z-index: 2;
     }
 
-    #mx-video-bg::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: rgba(0,0,0,.32);
-      pointer-events:none;
-      z-index:1;
-    }
+    /* overlay eliminado — video sin oscurecer */
   </style>
 </head>
 
@@ -776,7 +769,7 @@
             </div>
           </div>
 
-          <a class="navlink" href="mailto:hello@microstudiox.com" data-i18n="nav.contact">Contact</a>
+          <a class="navlink" href="/cdn-cgi/l/email-protection#b2dad7dededdf2dfdbd1c0ddc1c6c7d6dbddca9cd1dddf" data-i18n="nav.contact">Contact</a>
         </nav>
       </div>
     </header>
@@ -841,7 +834,7 @@
     </div>
   </div>
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     (function(){
       const cmpEl = document.getElementById("mx-cmp");
       const btnClose = document.getElementById("mx-btn-close");
@@ -1510,9 +1503,4 @@
         LANES.forEach(({ id, delay }) => setTimeout(() => runLane(id), delay));
       }
 
-      if (document.readyState === 'complete' || document.readyState === 'interactive') boot();
-      else document.addEventListener('DOMContentLoaded', boot);
-    })();
-  </script>
-</body>
-</html>
+      if (document.readyState === 'complete'
