@@ -459,22 +459,18 @@
       font-weight:400;
       letter-spacing:.16em;
       text-transform:uppercase;
-      opacity:.55;
+      opacity:1;
       align-items:center;
-      transition: opacity 200ms ease;
     }
 
     .footer-links a{
       color:#fff;
       text-decoration:none;
+      opacity:.55;
       transition: opacity 160ms ease;
     }
     .footer-links a:hover{
-      color:#fff;
       opacity:1;
-    }
-    .footer-links:has(a:hover){
-      opacity:.55;
     }
 
     .copyright{
@@ -834,6 +830,7 @@
     }
 
     
+  </style>
 </head>
 
 <body>
@@ -1649,6 +1646,7 @@
     })();
 
     (function(){
+      const VIDEO_CFG = {
         BASE   : 'https://www.microstudiox.com/assets/',
         FILES  : ['video1.mp4', 'video2.mp4', 'video3.mp4', 'video4.mp4'],
         LANES  : [
