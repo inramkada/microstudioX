@@ -300,16 +300,23 @@
       align-items:center;
       justify-content:center;
 
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.30);
-      color: rgba(255,255,255,.86);
+      /* Glass Watch OS */
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(20,20,28,.72);
+      backdrop-filter: blur(14px) saturate(1.6);
+      -webkit-backdrop-filter: blur(14px) saturate(1.6);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.10) inset,   /* highlight superior */
+        0 -1px 0 rgba(0,0,0,.30) inset,         /* sombra inferior */
+        0 4px 12px rgba(0,0,0,.40);             /* elevación */
+      color: rgba(255,255,255,.90);
 
       height:26px;
       padding: 0 10px;
       border-radius: 999px;
 
       font-size: 11px;
-      font-weight: 400;
+      font-weight: 500;
       letter-spacing: .12em;
       text-transform: uppercase;
 
@@ -318,7 +325,7 @@
 
       transform: translateX(10px);
       opacity: 0;
-      transition: transform 220ms ease, opacity 220ms ease, background 160ms ease, border-color 160ms ease, color 160ms ease;
+      transition: transform 220ms ease, opacity 220ms ease, background 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -342,8 +349,12 @@
 
     .lang-pill:hover{
       color:#fff;
-      border-color: rgba(255,255,255,.22);
-      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.30);
+      background: rgba(40,40,55,.85);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.16) inset,
+        0 -1px 0 rgba(0,0,0,.30) inset,
+        0 6px 18px rgba(0,0,0,.50);
     }
 
     .lang-pill::after{
