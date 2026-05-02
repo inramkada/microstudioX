@@ -69,7 +69,6 @@
       
     }
 
-    
     header, footer{
       background: transparent;
       backdrop-filter: none;
@@ -528,7 +527,6 @@
     html[dir="rtl"], body{ overflow-x: hidden; }
     [dir="rtl"] .page{ overflow-x: clip; }
 
-
     .mx-cmp{
       position:fixed;
       inset:0;
@@ -703,7 +701,6 @@
       flex: 2;
     }
 
-    
     #vl-center {
       flex: 0 0 auto;
       width: calc(100vh * 9 / 16);
@@ -734,6 +731,75 @@
     }
 
     
+
+    html{
+      background:#000;
+    }
+
+    body{
+      background:#000;
+      opacity:1 !important;
+    }
+
+    body.is-i18n-switching{
+      opacity:1 !important;
+    }
+
+    #mx-video-bg{
+      z-index:0 !important;
+      background:#000;
+    }
+
+    .page{
+      position:relative;
+      z-index:auto !important;
+      background:transparent !important;
+      isolation:auto !important;
+    }
+
+    header,
+    footer,
+    .topbar,
+    .footer-inner{
+      background:transparent !important;
+      backdrop-filter:none !important;
+      -webkit-backdrop-filter:none !important;
+      isolation:auto !important;
+    }
+
+    .topbar,
+    .footer-inner{
+      mix-blend-mode:normal !important;
+    }
+
+    .brand,
+    .brand span,
+    .navlink,
+    .navlink span,
+    .lang-trigger,
+    .footer-links,
+    .footer-links a,
+    .copyright{
+      color:#fff !important;
+      opacity:1 !important;
+      mix-blend-mode:difference !important;
+      filter:none !important;
+      text-shadow:none !important;
+    }
+
+    .brand,
+    .navlink{
+      font-weight:800;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:geometricPrecision;
+      transform:translateZ(0);
+      will-change:auto;
+    }
+
+    .vl video{
+      filter:contrast(1.08) brightness(1.02) saturate(1.02);
+    }
+
   </style>
 </head>
 
