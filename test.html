@@ -7,7 +7,7 @@
 
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), midi=(), sync-xhr=(), interest-cohort=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Rbf0lUClwsT+eFl7Fgwzv+Vp2VKVhjuIIQF6lP1tGuI='; style-src 'sha256-TQYKmnmU4bGcb9Hs1WX2m2iUkhAkffRRwB23HFWdEcM='; img-src 'none'; font-src 'none'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-MIKb0zYmId2DvHrBE/+2OG6s+Ukkmhwcdr4nQjRVqsk='; style-src 'sha256-E+4oob1bZ5yuxKAw/1txJwcYQN0zQaDS1VgSDAftEUs='; img-src 'none'; font-src 'none'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests" />
   <meta name="color-scheme" content="dark" />
 
   <meta property="og:type" content="website">
@@ -93,6 +93,14 @@
       white-space: nowrap;
       line-height: 1;
       color: #fff;
+      transform: translateY(0);
+      transition: opacity 900ms cubic-bezier(.16,1,.3,1), transform 900ms cubic-bezier(.16,1,.3,1), filter 900ms cubic-bezier(.16,1,.3,1);
+    }
+
+    .brand.is-revealing{
+      opacity:0 !important;
+      filter: blur(10px) !important;
+      transform: translateY(10px);
     }
 
     nav{
@@ -477,13 +485,13 @@ scroll-snap-type: x proximity;
 
     [data-i18n]{
       display:inline-block;
-      transition: opacity 160ms ease, transform 160ms ease, filter 160ms ease;
+      transition: opacity 380ms cubic-bezier(.16,1,.3,1), transform 380ms cubic-bezier(.16,1,.3,1), filter 380ms cubic-bezier(.16,1,.3,1);
       will-change: opacity, transform, filter;
     }
     [data-i18n].mx-i18n-out{
       opacity:0;
-      transform: translateY(2px);
-      filter: blur(1px);
+      transform: translateY(4px);
+      filter: blur(3px);
     }
     [data-i18n].mx-i18n-in{
       opacity:1;
@@ -1261,62 +1269,7 @@ scroll-snap-type: x proximity;
         try { localStorage.setItem(storageKey, lang); } catch(_e){ }
       }
 
-      const POOL_LATIN = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      const POOL_CYR   = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ0123456789";
-      const POOL_DEV   = "अआइईउऊएऐओऔकखगघचछजझटठडढतथदधनपफबभमयरलवशषसह०१२३४५६७८९";
-      const POOL_CJK   = "的一是在不了有人这中大为上个国我以要他时来用们生到作地于出就分对成会可主发年动同工也能下过子说产种面而方后多定行学法所民得经";
-      const POOL_AR    = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي٠١٢٣٤٥٦٧٨٩";
-
-      function poolForLang(lang){
-        if (lang === "ru") return POOL_CYR;
-        if (lang === "hi") return POOL_DEV;
-        if (lang === "zh") return POOL_CJK;
-        if (lang === "ar") return POOL_AR;
-        return POOL_LATIN;
-      }
-
       const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-      function scrambleSmart(el, finalText, durationMs, lang){
-        const base = String(finalText ?? "");
-
-        if (prefersReducedMotion){
-          el.textContent = base;
-          return;
-        }
-
-        const pool = poolForLang(lang);
-        const isArabic = (lang === "ar");
-
-        const start = performance.now();
-        const tick = (t) => {
-          const p = Math.min(1, (t - start) / durationMs);
-          const reveal = Math.floor(p * base.length);
-
-          if (isArabic){
-            const shown = base.slice(0, reveal);
-            const hidden = base.slice(reveal).replace(/[^\s]/g, " ");
-            el.textContent = shown + hidden;
-            if (p < 1) requestAnimationFrame(tick);
-            else el.textContent = base;
-            return;
-          }
-
-          let out = "";
-          for (let i = 0; i < base.length; i++){
-            const c = base[i];
-            if (i < reveal) { out += c; continue; }
-            if (c === " ") { out += " "; continue; }
-            if (/[\.\,\!\?\:\;\-\—\–\(\)\[\]\/\&\+%#@€$£"']/.test(c)) { out += c; continue; }
-            out += pool[(Math.random() * pool.length) | 0];
-          }
-          el.textContent = out;
-
-          if (p < 1) requestAnimationFrame(tick);
-          else el.textContent = base;
-        };
-        requestAnimationFrame(tick);
-      }
 
       function applyLang(lang){
         document.body.classList.add("is-i18n-switching");
@@ -1344,8 +1297,8 @@ scroll-snap-type: x proximity;
           }
 
           const nodes = Array.from(document.querySelectorAll("[data-i18n]"));
-          const delay = prefersReducedMotion ? 0 : 160;
-          const fadeBack = prefersReducedMotion ? 0 : 220;
+          const delay = prefersReducedMotion ? 0 : 380;
+          const fadeBack = prefersReducedMotion ? 0 : 380;
 
           nodes.forEach(el => el.classList.add("mx-i18n-out"));
 
@@ -1356,7 +1309,7 @@ scroll-snap-type: x proximity;
               const val = dict[key] ?? I18N[DEFAULT_LANG][key];
               if (typeof val !== "string") return;
 
-              scrambleSmart(el, val, 220, lang);
+              el.textContent = val;
 
               el.classList.remove("mx-i18n-out");
               el.classList.add("mx-i18n-in");
@@ -1502,6 +1455,22 @@ scroll-snap-type: x proximity;
           }, { passive:true });
         }
       })();
+    })();
+
+    (function(){
+      const el = document.querySelector('.brand');
+      if (!el) return;
+
+      const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) return;
+
+      el.classList.add('is-revealing');
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.classList.remove('is-revealing');
+        });
+      });
     })();
 
     (function(){
