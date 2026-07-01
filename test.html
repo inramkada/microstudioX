@@ -7,7 +7,7 @@
 
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), midi=(), sync-xhr=(), interest-cohort=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Er8JkBeIeFgY3BBIWxtMiY7AaZTWyDWzahnSIBMj8j0='; style-src 'sha256-w7T6aEAjojh5EGbvmdS8hCMg7FFiahwwsK3ArTysVHI='; img-src 'none'; font-src 'none'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Er8JkBeIeFgY3BBIWxtMiY7AaZTWyDWzahnSIBMj8j0='; style-src 'sha256-YvjmfdPew4cIg1KUiEBHUSgv1lqnjVphuVQPHdAEvAw='; img-src 'none'; font-src 'none'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests" />
   <meta name="color-scheme" content="dark" />
 
   <meta property="og:type" content="website">
@@ -82,6 +82,7 @@
       justify-content:space-between;
       gap:10px;
       mix-blend-mode:difference;
+      direction:ltr;
       }
 
     .brand{
@@ -99,6 +100,7 @@
       align-items:center;
       gap:12px;
       flex-wrap:wrap;
+      direction:ltr;
     }
 
     
@@ -297,11 +299,6 @@ scroll-snap-type: x proximity;
       left: calc(100% + 10px);
     }
 
-    [dir="rtl"] .lang-switch.open-right .lang-rail{
-      left:auto;
-      right: calc(100% + 10px);
-    }
-
     .lang-pill{
       position:relative;
       display:inline-flex;
@@ -402,6 +399,7 @@ scroll-snap-type: x proximity;
       display:flex;
       gap:10px;
       flex-wrap:wrap;
+      justify-content:center;
       font-size:10.5px;
       font-weight:400;
       letter-spacing:.16em;
@@ -493,22 +491,20 @@ scroll-snap-type: x proximity;
       filter: blur(0);
     }
 
-    [dir="rtl"] .navlink::after{ transform-origin:right; }
-
-    [dir="rtl"] .services-menu{
-      left:auto;
-      right:0;
-      align-items:flex-end;
-      text-align:right;
-    }
-    [dir="rtl"] .v-item{ align-items:flex-end; }
-
     @media (max-width: 640px){
       .topbar{
         flex-direction:column;
-        align-items:flex-start;
-        gap:8px;
+        align-items:center;
+        gap:14px;
       }
+
+      .brand{
+        width:100%;
+        text-align:center;
+        font-size:clamp(28px, 9.5vw, 42px);
+        letter-spacing:0.14em;
+      }
+
       nav{ width:100%; gap:10px; }
 
       .lang-rail{
@@ -517,11 +513,6 @@ scroll-snap-type: x proximity;
         top:100%;
         transform: translateY(10px) translateX(var(--rail-shift));
         max-width: min(92vw, 520px);
-      }
-
-      [dir="rtl"] .lang-rail{
-        left:auto;
-        right:0;
       }
     }
 
