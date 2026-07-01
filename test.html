@@ -7,7 +7,7 @@
 
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), midi=(), sync-xhr=(), interest-cohort=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Rbf0lUClwsT+eFl7Fgwzv+Vp2VKVhjuIIQF6lP1tGuI='; style-src 'sha256-OlcPyPXzdkS3bNHLmG8FPqRj47YIxIzldSL7u78rMSw='; img-src 'none'; font-src 'none'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Rbf0lUClwsT+eFl7Fgwzv+Vp2VKVhjuIIQF6lP1tGuI='; style-src 'sha256-TQYKmnmU4bGcb9Hs1WX2m2iUkhAkffRRwB23HFWdEcM='; img-src 'none'; font-src 'none'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests" />
   <meta name="color-scheme" content="dark" />
 
   <meta property="og:type" content="website">
@@ -531,7 +531,7 @@ scroll-snap-type: x proximity;
         transform:translateY(100%);
 
         display:grid;
-        grid-template-columns:repeat(3, 1fr);
+        grid-template-columns:repeat(2, 1fr);
         gap:10px;
 
         max-width:none;
@@ -555,18 +555,68 @@ scroll-snap-type: x proximity;
       }
 
       .lang-pill{
-        height:52px;
+        height:64px;
         transform:none;
         opacity:1;
         transition-delay:0ms !important;
+        flex-direction:column;
+        justify-content:center;
+        gap:3px;
+        padding:0 12px;
+        overflow:hidden;
+        position:relative;
       }
 
       .lang-switch.is-open .lang-pill{
         transform:none;
       }
 
+      .lang-pill::before{
+        content:"";
+        position:absolute;
+        inset:0;
+        background:radial-gradient(120px 60px at 50% 0%, rgba(255,255,255,.14), transparent 70%);
+        opacity:0;
+        transition:opacity 260ms ease;
+        pointer-events:none;
+      }
+
+      .lang-switch.is-open .lang-pill:active::before{
+        opacity:1;
+      }
+
+      .lang-switch.is-open .lang-pill:active{
+        transform:scale(0.95) !important;
+        background:rgba(255,255,255,.09);
+        border-color:rgba(255,255,255,.24);
+      }
+
+      .lang-pill-code{
+        font-size:14px;
+        font-weight:700;
+        letter-spacing:.14em;
+      }
+
       .lang-pill::after{
-        display:none;
+        content: attr(data-label);
+        position:static;
+        transform:none;
+        display:block;
+        background:none;
+        border:0;
+        padding:0;
+        backdrop-filter:none;
+        -webkit-backdrop-filter:none;
+        opacity:.55;
+        pointer-events:none;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        max-width:100%;
+        font-size:9.5px;
+        letter-spacing:.04em;
+        text-transform:none;
+        color:rgba(255,255,255,.72);
       }
     }
 
@@ -880,15 +930,15 @@ scroll-snap-type: x proximity;
             </button>
 
             <div class="lang-rail" id="lang-rail" role="menu" aria-label="Languages">
-              <button class="lang-pill" role="menuitem" data-lang="en" data-label="English" type="button">EN</button>
-              <button class="lang-pill" role="menuitem" data-lang="es" data-label="Español" type="button">ES</button>
-              <button class="lang-pill" role="menuitem" data-lang="ca" data-label="Català" type="button">CA</button>
-              <button class="lang-pill" role="menuitem" data-lang="eu" data-label="Euskara" type="button">EU</button>
-              <button class="lang-pill" role="menuitem" data-lang="zh" data-label="中文 (Chinese)" type="button">ZH</button>
-              <button class="lang-pill" role="menuitem" data-lang="hi" data-label="हिंदी (Hindi)" type="button">HI</button>
-              <button class="lang-pill" role="menuitem" data-lang="ar" data-label="العربية (Arabic)" type="button">AR</button>
-              <button class="lang-pill" role="menuitem" data-lang="ru" data-label="Русский" type="button">RU</button>
-              <button class="lang-pill" role="menuitem" data-lang="fr" data-label="Français" type="button">FR</button>
+              <button class="lang-pill" role="menuitem" data-lang="en" data-label="English" type="button"><span class="lang-pill-code">EN</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="es" data-label="Español" type="button"><span class="lang-pill-code">ES</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="ca" data-label="Català" type="button"><span class="lang-pill-code">CA</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="eu" data-label="Euskara" type="button"><span class="lang-pill-code">EU</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="zh" data-label="中文 (Chinese)" type="button"><span class="lang-pill-code">ZH</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="hi" data-label="हिंदी (Hindi)" type="button"><span class="lang-pill-code">HI</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="ar" data-label="العربية (Arabic)" type="button"><span class="lang-pill-code">AR</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="ru" data-label="Русский" type="button"><span class="lang-pill-code">RU</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="fr" data-label="Français" type="button"><span class="lang-pill-code">FR</span></button>
             </div>
           </div>
 
