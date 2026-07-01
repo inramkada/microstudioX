@@ -7,7 +7,7 @@
 
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), midi=(), sync-xhr=(), interest-cohort=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jqeSn3YTzDJbji+8oOOX5KLi+iXwpqW9H+CZDf001tE='; style-src 'sha256-cp5ra5VJLgboys1jylQDcStGJdcfPvwzAAWMtVeM4+4='; img-src 'none'; font-src 'none'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Er8JkBeIeFgY3BBIWxtMiY7AaZTWyDWzahnSIBMj8j0='; style-src 'sha256-w7T6aEAjojh5EGbvmdS8hCMg7FFiahwwsK3ArTysVHI='; img-src 'none'; font-src 'none'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests" />
   <meta name="color-scheme" content="dark" />
 
   <meta property="og:type" content="website">
@@ -493,10 +493,7 @@ scroll-snap-type: x proximity;
       filter: blur(0);
     }
 
-    [dir="rtl"] .topbar{ flex-direction:row-reverse; }
-    [dir="rtl"] nav{ flex-direction:row-reverse; }
     [dir="rtl"] .navlink::after{ transform-origin:right; }
-    [dir="rtl"] .footer-links{ flex-direction:row-reverse; }
 
     [dir="rtl"] .services-menu{
       left:auto;
@@ -1312,11 +1309,7 @@ scroll-snap-type: x proximity;
           startY = p.y;
           startScroll = rail.scrollLeft;
           dragging = false;
-
-          if (pressedBtn){
-            e.preventDefault();
-          }
-        }, { passive:false });
+        }, { passive:true });
 
         rail.addEventListener("touchmove", (e) => {
           if (!e.touches || e.touches.length === 0) return;
