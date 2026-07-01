@@ -7,7 +7,7 @@
 
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), midi=(), sync-xhr=(), interest-cohort=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Er8JkBeIeFgY3BBIWxtMiY7AaZTWyDWzahnSIBMj8j0='; style-src 'sha256-YvjmfdPew4cIg1KUiEBHUSgv1lqnjVphuVQPHdAEvAw='; img-src 'none'; font-src 'none'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Rbf0lUClwsT+eFl7Fgwzv+Vp2VKVhjuIIQF6lP1tGuI='; style-src 'sha256-OlcPyPXzdkS3bNHLmG8FPqRj47YIxIzldSL7u78rMSw='; img-src 'none'; font-src 'none'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests" />
   <meta name="color-scheme" content="dark" />
 
   <meta property="og:type" content="website">
@@ -507,12 +507,66 @@ scroll-snap-type: x proximity;
 
       nav{ width:100%; gap:10px; }
 
+      .lang-switch::before{
+        content:"";
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.55);
+        backdrop-filter:blur(2px);
+        -webkit-backdrop-filter:blur(2px);
+        opacity:0;
+        pointer-events:none;
+        transition:opacity 220ms ease;
+        z-index:9997;
+      }
+      .lang-switch.is-open::before{
+        opacity:1;
+        pointer-events:auto;
+      }
+
       .lang-rail{
-        right:auto;
-        left:0;
-        top:100%;
-        transform: translateY(10px) translateX(var(--rail-shift));
-        max-width: min(92vw, 520px);
+        position:fixed;
+        inset:auto 0 0 0;
+        margin:0;
+        transform:translateY(100%);
+
+        display:grid;
+        grid-template-columns:repeat(3, 1fr);
+        gap:10px;
+
+        max-width:none;
+        width:100%;
+        padding:20px 16px calc(20px + env(safe-area-inset-bottom));
+        border-radius:20px 20px 0 0;
+        border-width:1px 0 0 0;
+
+        overflow:visible;
+        white-space:normal;
+        scroll-snap-type:none;
+        -webkit-mask-image:none;
+        mask-image:none;
+
+        transition:transform 320ms cubic-bezier(.32,.72,0,1), opacity 220ms ease;
+        z-index:9998;
+      }
+
+      .lang-switch.is-open .lang-rail{
+        transform:translateY(0);
+      }
+
+      .lang-pill{
+        height:52px;
+        transform:none;
+        opacity:1;
+        transition-delay:0ms !important;
+      }
+
+      .lang-switch.is-open .lang-pill{
+        transform:none;
+      }
+
+      .lang-pill::after{
+        display:none;
       }
     }
 
@@ -1228,6 +1282,7 @@ scroll-snap-type: x proximity;
           switchEl?.classList.remove("is-open");
           switchEl?.classList.remove("open-right");
           switchEl?.querySelector(".lang-trigger")?.setAttribute("aria-expanded", "false");
+          document.body.style.overflow = "";
 
           const railEl = document.getElementById("lang-rail");
           if (railEl){
@@ -1470,12 +1525,20 @@ scroll-snap-type: x proximity;
         clampRailIntoViewport();
       }
 
+      function isMobileSheet(){
+        return window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+      }
+
       function openRail(){
         const y = window.scrollY || document.documentElement.scrollTop || 0;
         requestAnimationFrame(() => window.scrollTo(0, y));
 
         switchEl.classList.add('is-open');
         triggerEl?.setAttribute('aria-expanded', 'true');
+
+        if (isMobileSheet()){
+          document.body.style.overflow = 'hidden';
+        }
 
         requestAnimationFrame(() => {
           ensureStartVisibleOnce();
@@ -1489,6 +1552,7 @@ scroll-snap-type: x proximity;
         switchEl.classList.remove('open-right');
         triggerEl?.setAttribute('aria-expanded', 'false');
         resetShift();
+        document.body.style.overflow = '';
       }
 
       function scheduleOpen(){
@@ -1499,6 +1563,12 @@ scroll-snap-type: x proximity;
         clearTimers();
         closeTimer = setTimeout(() => closeRail(), CLOSE_DELAY_MS);
       }
+
+      switchEl.addEventListener('pointerdown', (e) => {
+        if (isMobileSheet() && e.target === switchEl && switchEl.classList.contains('is-open')){
+          closeRail();
+        }
+      });
 
       switchEl.addEventListener('pointerenter', () => {
         if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
