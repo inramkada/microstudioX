@@ -6,8 +6,7 @@
   <title>microstudioX</title>
 
   <meta name="referrer" content="no-referrer" />
-  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), midi=(), sync-xhr=(), interest-cohort=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-5AWYcJYu/bmI0o3OHSDSScDHAEms9+T7xIYK0qVq/jo='; style-src 'sha256-cp5ra5VJLgboys1jylQDcStGJdcfPvwzAAWMtVeM4+4='; img-src 'none'; font-src 'none'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests" />
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
   <meta name="color-scheme" content="dark" />
 
   <meta property="og:type" content="website">
@@ -25,6 +24,9 @@
     :root{
       --bg:#000;
       --fg:rgba(255,255,255,.94);
+      --muted:rgba(255,255,255,.62);
+      --hair:rgba(255,255,255,.12);
+      --glass:rgba(0,0,0,.78);
 
       --px:clamp(12px, 2vw, 18px);
       --py:10px;
@@ -37,6 +39,9 @@
 
       --copy-size:clamp(6.5px, 1.1vw, 7px);
       --copy-track:0.06em;
+
+      --radius:14px;
+      --blur:10px;
 
       --menu-bg: rgba(0,0,0,.86);
       --menu-border: rgba(255,255,255,.14);
@@ -101,8 +106,8 @@
       flex-wrap:wrap;
     }
 
-    
-.navlink{
+    /* Shared link styling for nav items (was duplicated in the original file) */
+    .navlink{
       color:rgba(255,255,255,.74);
       text-decoration:none;
       font-size:var(--nav-size);
@@ -253,7 +258,8 @@
       display:flex;
       align-items:center;
       gap:8px;
-padding:6px 16px;
+
+      padding:6px 8px;
       border:1px solid var(--menu-border);
       background: var(--menu-bg);
       border-radius: 999px;
@@ -262,8 +268,6 @@ padding:6px 16px;
       overflow-x: auto;
       overflow-y: hidden;
       white-space: nowrap;
-scroll-snap-type: x proximity;
-      scroll-padding-inline: 16px;
 
       direction:ltr;
       unicode-bidi:isolate;
@@ -280,8 +284,6 @@ scroll-snap-type: x proximity;
       touch-action: pan-x;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-x: contain;
--webkit-mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
-      mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
     }
 
     .lang-rail::-webkit-scrollbar{ height:0; }
@@ -323,8 +325,6 @@ scroll-snap-type: x proximity;
 
       cursor:pointer;
       user-select:none;
-      scroll-snap-align: start;
-      flex: 0 0 auto;
 
       transform: translateX(10px);
       opacity: 0;
@@ -415,11 +415,6 @@ scroll-snap-type: x proximity;
       text-decoration:none;
     }
     .footer-links a:hover{ color:#fff; }
-
-    .footer-cookie-group{
-      display:inline-flex;
-      align-items:center;
-    }
 
     .copyright{
       font-size:var(--copy-size);
@@ -734,10 +729,16 @@ scroll-snap-type: x proximity;
       pointer-events:none;
       z-index: 2;
     }
+
+    /* Mobile: three simultaneous videos is heavy on data & battery.
+       Keep only the center lane active; side lanes stay hidden/paused. */
     @media (max-width: 640px), (prefers-reduced-data: reduce){
       #vl-left, #vl-right{ display:none; }
       #vl-center{ width:100%; flex:1 1 auto; }
     }
+
+    /* Respect users who've asked for less motion: freeze on first frame,
+       no cross-fade / lane-expansion choreography. */
     @media (prefers-reduced-motion: reduce){
       .vl{ transition:none; }
       .vl video{ transition:none; }
@@ -824,7 +825,7 @@ scroll-snap-type: x proximity;
   <div class="page" id="app-root">
     <header id="mx-header">
       <div class="topbar">
-        <div class="brand">microstudio<span>X</span></div>
+        <div class="brand" data-text="MICROSTUDIOX">microstudio<span style="text-transform:uppercase">X</span></div>
 
         <nav>
           <div class="lang-switch" id="lang-switch">
@@ -850,10 +851,11 @@ scroll-snap-type: x proximity;
             </div>
           </div>
 
-          <a class="navlink" href="#/about" data-i18n="nav.about">About</a>
+          <a class="navlink" href="#/about" data-text="ABOUT" data-i18n="nav.about">About</a>
 
-          <div class="navlink services" id="services" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
+          <div class="navlink services" id="services" data-text="SERVICES" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
             <span data-i18n="nav.services">Services</span>
+            <!-- TODO: replace with the real destination for each service (currently all point to the homepage) -->
             <div class="services-menu" aria-label="Services">
               <a class="v-item" href="https://www.microstudiox.com/digital-platforms">
                 <span class="v-main">DIGITAL PLATFORMS</span>
@@ -870,7 +872,7 @@ scroll-snap-type: x proximity;
             </div>
           </div>
 
-          <a class="navlink" href="mailto:info@microretailx.com" data-i18n="nav.contact">Contact</a>
+          <a class="navlink" href="mailto:info@microretailx.com" data-text="CONTACT" data-i18n="nav.contact">Contact</a>
         </nav>
       </div>
     </header>
@@ -879,11 +881,12 @@ scroll-snap-type: x proximity;
 
     <footer>
       <div class="footer-inner">
+        <!-- TODO: point these at real Terms/Privacy/Legal pages instead of index.html -->
         <div class="footer-links">
           <a href="/terms.html" data-i18n="footer.terms">Terms</a>
           <a href="/privacy.html" data-i18n="footer.privacy">Privacy</a>
 
-          <span class="footer-cookie-group">
+          <span style="display:inline-flex; align-items:center;">
             <a href="/cookies.html" data-i18n="footer.cookies">Cookies</a>
             <button
               type="button"
@@ -1156,7 +1159,7 @@ scroll-snap-type: x proximity;
 
       function getLang(){
         let saved = null;
-        try { saved = localStorage.getItem(storageKey); } catch(_e){ }
+        try { saved = localStorage.getItem(storageKey); } catch(_e){ /* storage may be blocked */ }
         if (saved && I18N[saved]) return saved;
 
         const detected = detectBrowserLang();
@@ -1166,7 +1169,7 @@ scroll-snap-type: x proximity;
       }
 
       function setLang(lang){
-        try { localStorage.setItem(storageKey, lang); } catch(_e){ }
+        try { localStorage.setItem(storageKey, lang); } catch(_e){ /* storage may be blocked */ }
       }
 
       const POOL_LATIN = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -1611,11 +1614,15 @@ scroll-snap-type: x proximity;
     })();
 
     (function(){
+      // TODO: point these at your real, hosted video assets — placeholders will 404.
       const BASE = 'https://www.microstudiox.com/assets/';
       const VIDEOS = [BASE+'video1.mp4', BASE+'video2.mp4', BASE+'video3.mp4', BASE+'video4.mp4'];
 
       const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const isSmallScreen = window.matchMedia && window.matchMedia("(max-width: 640px)").matches;
+
+      // On mobile only the center lane is visible (see CSS), so don't waste
+      // bandwidth loading/playing the side lanes at all.
       const LANES = isSmallScreen
         ? [{ id: 'vl-center', delay: 0 }]
         : [
