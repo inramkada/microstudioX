@@ -6,7 +6,8 @@
   <title>microstudioX</title>
 
   <meta name="referrer" content="no-referrer" />
-  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), midi=(), sync-xhr=(), interest-cohort=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Rbf0lUClwsT+eFl7Fgwzv+Vp2VKVhjuIIQF6lP1tGuI='; style-src 'sha256-TQYKmnmU4bGcb9Hs1WX2m2iUkhAkffRRwB23HFWdEcM='; img-src 'none'; font-src 'none'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; require-trusted-types-for 'script'; upgrade-insecure-requests" />
   <meta name="color-scheme" content="dark" />
 
   <meta property="og:type" content="website">
@@ -24,9 +25,6 @@
     :root{
       --bg:#000;
       --fg:rgba(255,255,255,.94);
-      --muted:rgba(255,255,255,.62);
-      --hair:rgba(255,255,255,.12);
-      --glass:rgba(0,0,0,.78);
 
       --px:clamp(12px, 2vw, 18px);
       --py:10px;
@@ -39,9 +37,6 @@
 
       --copy-size:clamp(6.5px, 1.1vw, 7px);
       --copy-track:0.06em;
-
-      --radius:14px;
-      --blur:10px;
 
       --menu-bg: rgba(0,0,0,.86);
       --menu-border: rgba(255,255,255,.14);
@@ -87,6 +82,7 @@
       justify-content:space-between;
       gap:10px;
       mix-blend-mode:difference;
+      direction:ltr;
       }
 
     .brand{
@@ -104,21 +100,12 @@
       align-items:center;
       gap:12px;
       flex-wrap:wrap;
+      direction:ltr;
     }
 
-    .navlink{
-      color:#fff;
-      text-decoration:none;
-      font-size:var(--nav-size);
-      font-weight:700;
-      letter-spacing:var(--nav-track);
-      text-transform:uppercase;
-      padding:5px 2px;
-      position:relative;
-    }
-
-    .navlink{
-      color:#fff;
+    
+.navlink{
+      color:rgba(255,255,255,.74);
       text-decoration:none;
       font-size:var(--nav-size);
       font-weight:700;
@@ -132,10 +119,21 @@
     .brand, .navlink{
       position:relative;
       z-index:2;
-      color:rgba(255,255,255,.74);
     }
 
-    .navlink:hover{ color:inherit; }
+    .navlink:hover,
+    .navlink:focus-visible{ color:inherit; }
+
+    .navlink:focus-visible,
+    .lang-trigger:focus-visible,
+    .lang-pill:focus-visible,
+    .v-item:focus-visible,
+    .cookie-gear:focus-visible,
+    .mx-btn:focus-visible{
+      outline: 2px solid rgba(255,255,255,.85);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
 
     .navlink::after{
       content:"";
@@ -147,7 +145,7 @@
       transform-origin:left;
       transition:transform 150ms ease;
     }
-    .navlink:hover::after{ transform:scaleX(1); }
+    .navlink:hover::after, .navlink:focus-visible::after{ transform:scaleX(1); }
 
     .services{
       position:relative;
@@ -217,8 +215,8 @@
       line-height:1.05;
     }
 
-    .v-item:hover .v-main{ color:#fff; }
-    .v-item:hover .v-sub{ color:rgba(255,255,255,.72); }
+    .v-item:hover .v-main, .v-item:focus-visible .v-main{ color:#fff; }
+    .v-item:hover .v-sub, .v-item:focus-visible .v-sub{ color:rgba(255,255,255,.72); }
 
     .lang-switch{
       position:relative;
@@ -243,7 +241,7 @@
       user-select:none;
     }
     .lang-trigger:hover{ background: rgba(255,255,255,.06); }
-    .lang-trigger:focus{ outline:none; }
+
     .globe{ width:18px; height:18px; display:block; }
 
     .lang-rail{
@@ -257,8 +255,7 @@
       display:flex;
       align-items:center;
       gap:8px;
-
-      padding:6px 8px;
+padding:6px 16px;
       border:1px solid var(--menu-border);
       background: var(--menu-bg);
       border-radius: 999px;
@@ -267,6 +264,8 @@
       overflow-x: auto;
       overflow-y: hidden;
       white-space: nowrap;
+scroll-snap-type: x proximity;
+      scroll-padding-inline: 16px;
 
       direction:ltr;
       unicode-bidi:isolate;
@@ -283,6 +282,8 @@
       touch-action: pan-x;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-x: contain;
+-webkit-mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
     }
 
     .lang-rail::-webkit-scrollbar{ height:0; }
@@ -296,11 +297,6 @@
     .lang-switch.open-right .lang-rail{
       right:auto;
       left: calc(100% + 10px);
-    }
-
-    [dir="rtl"] .lang-switch.open-right .lang-rail{
-      left:auto;
-      right: calc(100% + 10px);
     }
 
     .lang-pill{
@@ -324,6 +320,8 @@
 
       cursor:pointer;
       user-select:none;
+      scroll-snap-align: start;
+      flex: 0 0 auto;
 
       transform: translateX(10px);
       opacity: 0;
@@ -331,7 +329,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    .lang-pill:focus{ outline:none; }
     .lang-pill[hidden]{ display:none !important; }
 
     .lang-switch.is-open .lang-pill{
@@ -349,7 +346,7 @@
     .lang-switch.is-open .lang-pill:nth-child(8)  { transition-delay:126ms; }
     .lang-switch.is-open .lang-pill:nth-child(9)  { transition-delay:144ms; }
 
-    .lang-pill:hover{
+    .lang-pill:hover, .lang-pill:focus-visible{
       color:#fff;
       border-color: rgba(255,255,255,.22);
       background: rgba(255,255,255,.06);
@@ -380,7 +377,7 @@
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
-    .lang-pill:hover::after{ opacity:1; }
+    .lang-pill:hover::after, .lang-pill:focus-visible::after{ opacity:1; }
 
     main{ flex:1; display:block; }
 
@@ -395,7 +392,6 @@
       align-items:center;
       gap:6px;
       mix-blend-mode:difference;
-      
       transform: translateZ(0);
     }
 
@@ -403,6 +399,7 @@
       display:flex;
       gap:10px;
       flex-wrap:wrap;
+      justify-content:center;
       font-size:10.5px;
       font-weight:400;
       letter-spacing:.16em;
@@ -416,6 +413,11 @@
       text-decoration:none;
     }
     .footer-links a:hover{ color:#fff; }
+
+    .footer-cookie-group{
+      display:inline-flex;
+      align-items:center;
+    }
 
     .copyright{
       font-size:var(--copy-size);
@@ -471,7 +473,7 @@
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
-    .cookie-gear:hover::after{ opacity:1; }
+    .cookie-gear:hover::after, .cookie-gear:focus-visible::after{ opacity:1; }
 
     [data-i18n]{
       display:inline-block;
@@ -489,38 +491,132 @@
       filter: blur(0);
     }
 
-    [dir="rtl"] .topbar{ flex-direction:row-reverse; }
-    [dir="rtl"] nav{ flex-direction:row-reverse; }
-    [dir="rtl"] .navlink::after{ transform-origin:right; }
-    [dir="rtl"] .footer-links{ flex-direction:row-reverse; }
-
-    [dir="rtl"] .services-menu{
-      left:auto;
-      right:0;
-      align-items:flex-end;
-      text-align:right;
-    }
-    [dir="rtl"] .v-item{ align-items:flex-end; }
-
     @media (max-width: 640px){
       .topbar{
         flex-direction:column;
-        align-items:flex-start;
-        gap:8px;
+        align-items:center;
+        gap:14px;
       }
+
+      .brand{
+        width:100%;
+        text-align:center;
+        font-size:clamp(28px, 9.5vw, 42px);
+        letter-spacing:0.14em;
+      }
+
       nav{ width:100%; gap:10px; }
 
-      .lang-rail{
-        right:auto;
-        left:0;
-        top:100%;
-        transform: translateY(10px) translateX(var(--rail-shift));
-        max-width: min(92vw, 520px);
+      .lang-switch::before{
+        content:"";
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.55);
+        backdrop-filter:blur(2px);
+        -webkit-backdrop-filter:blur(2px);
+        opacity:0;
+        pointer-events:none;
+        transition:opacity 220ms ease;
+        z-index:9997;
+      }
+      .lang-switch.is-open::before{
+        opacity:1;
+        pointer-events:auto;
       }
 
-      [dir="rtl"] .lang-rail{
-        left:auto;
-        right:0;
+      .lang-rail{
+        position:fixed;
+        inset:auto 0 0 0;
+        margin:0;
+        transform:translateY(100%);
+
+        display:grid;
+        grid-template-columns:repeat(2, 1fr);
+        gap:10px;
+
+        max-width:none;
+        width:100%;
+        padding:20px 16px calc(20px + env(safe-area-inset-bottom));
+        border-radius:20px 20px 0 0;
+        border-width:1px 0 0 0;
+
+        overflow:visible;
+        white-space:normal;
+        scroll-snap-type:none;
+        -webkit-mask-image:none;
+        mask-image:none;
+
+        transition:transform 320ms cubic-bezier(.32,.72,0,1), opacity 220ms ease;
+        z-index:9998;
+      }
+
+      .lang-switch.is-open .lang-rail{
+        transform:translateY(0);
+      }
+
+      .lang-pill{
+        height:64px;
+        transform:none;
+        opacity:1;
+        transition-delay:0ms !important;
+        flex-direction:column;
+        justify-content:center;
+        gap:3px;
+        padding:0 12px;
+        overflow:hidden;
+        position:relative;
+      }
+
+      .lang-switch.is-open .lang-pill{
+        transform:none;
+      }
+
+      .lang-pill::before{
+        content:"";
+        position:absolute;
+        inset:0;
+        background:radial-gradient(120px 60px at 50% 0%, rgba(255,255,255,.14), transparent 70%);
+        opacity:0;
+        transition:opacity 260ms ease;
+        pointer-events:none;
+      }
+
+      .lang-switch.is-open .lang-pill:active::before{
+        opacity:1;
+      }
+
+      .lang-switch.is-open .lang-pill:active{
+        transform:scale(0.95) !important;
+        background:rgba(255,255,255,.09);
+        border-color:rgba(255,255,255,.24);
+      }
+
+      .lang-pill-code{
+        font-size:14px;
+        font-weight:700;
+        letter-spacing:.14em;
+      }
+
+      .lang-pill::after{
+        content: attr(data-label);
+        position:static;
+        transform:none;
+        display:block;
+        background:none;
+        border:0;
+        padding:0;
+        backdrop-filter:none;
+        -webkit-backdrop-filter:none;
+        opacity:.55;
+        pointer-events:none;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        max-width:100%;
+        font-size:9.5px;
+        letter-spacing:.04em;
+        text-transform:none;
+        color:rgba(255,255,255,.72);
       }
     }
 
@@ -695,6 +791,7 @@
       object-fit: cover;
       opacity:0;
       transition: opacity 1.6s ease;
+      background: #000;
     }
 
     .vl.is-expanded {
@@ -729,8 +826,14 @@
       pointer-events:none;
       z-index: 2;
     }
-
-    
+    @media (max-width: 640px), (prefers-reduced-data: reduce){
+      #vl-left, #vl-right{ display:none; }
+      #vl-center{ width:100%; flex:1 1 auto; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .vl{ transition:none; }
+      .vl video{ transition:none; }
+    }
 
     html{
       background:#000;
@@ -804,21 +907,21 @@
 </head>
 
 <body>
-  <div id="mx-video-bg">
-    <div class="vl" id="vl-left"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
-    <div class="vl" id="vl-center"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
-    <div class="vl" id="vl-right"><video muted playsinline preload="auto" aria-hidden="true"></video></div>
+  <div id="mx-video-bg" aria-hidden="true">
+    <div class="vl" id="vl-left"><video muted playsinline preload="none" aria-hidden="true"></video></div>
+    <div class="vl" id="vl-center"><video muted playsinline preload="none" aria-hidden="true"></video></div>
+    <div class="vl" id="vl-right"><video muted playsinline preload="none" aria-hidden="true"></video></div>
   </div>
 
   <div class="page" id="app-root">
     <header id="mx-header">
       <div class="topbar">
-        <div class="brand" data-text="MICROSTUDIOX">microstudio<span style="text-transform:uppercase">X</span></div>
+        <div class="brand">microstudio<span>X</span></div>
 
         <nav>
           <div class="lang-switch" id="lang-switch">
-            <button class="lang-trigger" aria-label="Language selector" type="button">
-              <svg class="globe" viewBox="0 0 24 24" aria-hidden="true">
+            <button class="lang-trigger" aria-label="Language selector" aria-haspopup="true" aria-expanded="false" type="button">
+              <svg class="globe" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/>
                 <path d="M3 12h18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
                 <path d="M12 3c3 3 3 15 0 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
@@ -826,40 +929,40 @@
               </svg>
             </button>
 
-            <div class="lang-rail" id="lang-rail" aria-label="Languages">
-              <button class="lang-pill" data-lang="en" data-label="English" type="button">EN</button>
-              <button class="lang-pill" data-lang="es" data-label="Español" type="button">ES</button>
-              <button class="lang-pill" data-lang="ca" data-label="Català" type="button">CA</button>
-              <button class="lang-pill" data-lang="eu" data-label="Euskara" type="button">EU</button>
-              <button class="lang-pill" data-lang="zh" data-label="中文 (Chinese)" type="button">ZH</button>
-              <button class="lang-pill" data-lang="hi" data-label="हिंदी (Hindi)" type="button">HI</button>
-              <button class="lang-pill" data-lang="ar" data-label="العربية (Arabic)" type="button">AR</button>
-              <button class="lang-pill" data-lang="ru" data-label="Русский" type="button">RU</button>
-              <button class="lang-pill" data-lang="fr" data-label="Français" type="button">FR</button>
+            <div class="lang-rail" id="lang-rail" role="menu" aria-label="Languages">
+              <button class="lang-pill" role="menuitem" data-lang="en" data-label="English" type="button"><span class="lang-pill-code">EN</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="es" data-label="Español" type="button"><span class="lang-pill-code">ES</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="ca" data-label="Català" type="button"><span class="lang-pill-code">CA</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="eu" data-label="Euskara" type="button"><span class="lang-pill-code">EU</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="zh" data-label="中文 (Chinese)" type="button"><span class="lang-pill-code">ZH</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="hi" data-label="हिंदी (Hindi)" type="button"><span class="lang-pill-code">HI</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="ar" data-label="العربية (Arabic)" type="button"><span class="lang-pill-code">AR</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="ru" data-label="Русский" type="button"><span class="lang-pill-code">RU</span></button>
+              <button class="lang-pill" role="menuitem" data-lang="fr" data-label="Français" type="button"><span class="lang-pill-code">FR</span></button>
             </div>
           </div>
 
-          <a class="navlink" href="#/about" data-text="ABOUT" data-i18n="nav.about">About</a>
+          <a class="navlink" href="#/about" data-i18n="nav.about">About</a>
 
-          <div class="navlink services" id="services" data-text="SERVICES" role="button" aria-haspopup="true" aria-expanded="false">
+          <div class="navlink services" id="services" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
             <span data-i18n="nav.services">Services</span>
             <div class="services-menu" aria-label="Services">
-              <a class="v-item" href="https://www.microstudiox.com">
+              <a class="v-item" href="https://www.microstudiox.com/digital-platforms">
                 <span class="v-main">DIGITAL PLATFORMS</span>
                 <span class="v-sub">WEB DESIGN</span>
               </a>
-              <a class="v-item" href="https://www.microstudiox.com">
+              <a class="v-item" href="https://www.microstudiox.com/ai-driven-media">
                 <span class="v-main">AI DRIVEN MEDIA</span>
                 <span class="v-sub">MODELS</span>
               </a>
-              <a class="v-item" href="https://www.microstudiox.com">
+              <a class="v-item" href="https://www.microstudiox.com/digital-id-systems">
                 <span class="v-main">DIGITAL ID SYSTEMS</span>
                 <span class="v-sub">VECTOR TRACK</span>
               </a>
             </div>
           </div>
 
-          <a class="navlink" href="mailto:info@microretailx.com" data-text="CONTACT" data-i18n="nav.contact">Contact</a>
+          <a class="navlink" href="mailto:info@microretailx.com" data-i18n="nav.contact">Contact</a>
         </nav>
       </div>
     </header>
@@ -869,11 +972,11 @@
     <footer>
       <div class="footer-inner">
         <div class="footer-links">
-          <a href="index.html" data-i18n="footer.terms">Terms</a>
-          <a href="index.html" data-i18n="footer.privacy">Privacy</a>
+          <a href="/terms.html" data-i18n="footer.terms">Terms</a>
+          <a href="/privacy.html" data-i18n="footer.privacy">Privacy</a>
 
-          <span style="display:inline-flex; align-items:center;">
-            <a href="index.html" data-i18n="footer.cookies">Cookies</a>
+          <span class="footer-cookie-group">
+            <a href="/cookies.html" data-i18n="footer.cookies">Cookies</a>
             <button
               type="button"
               class="cookie-gear"
@@ -881,13 +984,13 @@
               aria-label="Cookie Preferences"
               data-tip="Cookie Preferences"
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path fill="currentColor" d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.4.12-.61l-1.92-3.32c-.11-.2-.36-.28-.57-.2l-2.39.96c-.5-.38-1.04-.7-1.64-.94l-.36-2.54A.49.49 0 0 0 13.9 1h-3.8c-.24 0-.44.17-.48.41l-.36 2.54c-.6.24-1.14.56-1.64.94l-2.39-.96c-.21-.08-.46 0-.57.2L1.74 7.45c-.11.21-.06.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.4-.12.61l1.92 3.32c.11.2.36.28.57.2l2.39-.96c.5.38 1.04.7 1.64.94l.36 2.54c.04.24.24.41.48.41h3.8c.24 0 .44-.17.48-.41l.36-2.54c.6-.24 1.14-.56 1.64-.94l2.39.96c.21.08.46 0 .57-.2l1.92-3.32c.11-.2.06-.47-.12-.61l-2.03-1.58zM12 15.2A3.2 3.2 0 1 1 12 8.8a3.2 3.2 0 0 1 0 6.4z"/>
               </svg>
             </button>
           </span>
 
-          <a href="index.html" data-i18n="footer.legal">Legal</a>
+          <a href="/legal.html" data-i18n="footer.legal">Legal</a>
         </div>
 
         <div class="copyright">
@@ -897,7 +1000,7 @@
     </footer>
   </div>
 
-  <div class="mx-cmp" id="mx-cmp" role="dialog" aria-modal="true" aria-labelledby="mx-cmp-title">
+  <div class="mx-cmp" id="mx-cmp" role="dialog" aria-modal="true" aria-labelledby="mx-cmp-title" aria-describedby="mx-cmp-desc">
     <div class="mx-cmp-panel">
       <div class="mx-cmp-head">
         <h2 class="mx-cmp-title" id="mx-cmp-title" data-i18n="cmp.title">Privacy & Cookies</h2>
@@ -913,7 +1016,7 @@
             <p data-i18n="cmp.necessary.desc">Security & core functionality (always on).</p>
           </div>
           <div>
-            <div class="mx-switch" aria-label="Technical storage (always on)"></div>
+            <div class="mx-switch" role="img" aria-label="Technical storage (always on)"></div>
           </div>
         </div>
       </div>
@@ -929,15 +1032,34 @@
       const cmpEl = document.getElementById("mx-cmp");
       const btnClose = document.getElementById("mx-btn-close");
       const gear = document.getElementById("cookiePreferencesGear");
+      let lastFocused = null;
+
+      function trapFocus(e){
+        if (e.key !== "Tab") return;
+        const focusables = cmpEl.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first){
+          e.preventDefault(); last.focus();
+        } else if (!e.shiftKey && document.activeElement === last){
+          e.preventDefault(); first.focus();
+        }
+      }
 
       function openCMP(){
         if (!cmpEl) return;
+        lastFocused = document.activeElement;
         cmpEl.classList.add("is-open");
+        cmpEl.addEventListener("keydown", trapFocus);
+        btnClose?.focus();
       }
 
       function closeCMP(){
         if (!cmpEl) return;
         cmpEl.classList.remove("is-open");
+        cmpEl.removeEventListener("keydown", trapFocus);
+        if (lastFocused && lastFocused.focus) lastFocused.focus();
       }
 
       gear?.addEventListener("click", (e) => {
@@ -1019,7 +1141,7 @@
       "footer.legal": "Legal",
       "cookie.prefs": "Preferències de cookies",
       "cmp.title": "Privacitat i cookies",
-      "cmp.desc": "Respectem la vostra privacitat. Aquest lloc no utilitza cookies publicitàries ni de seguiment. Només es pot utilitzar un emmagatzematge tècnic mínim per seguretat i funcionament bàsic (per exemple, preferències d’idioma).",
+      "cmp.desc": "Respectem la vostra privacitat. Aquest lloc no utilitza cookies publicitàries ni de seguiment. Només es pot utilitzar un emmagatzematge tècnic mínim per seguretat i funcionament bàsic (per exemple, preferències d'idioma).",
       "cmp.necessary": "Tècniques",
       "cmp.necessary.desc": "Seguretat i funcionament bàsic (sempre actives).",
       "cmp.close": "Tancar"
@@ -1051,7 +1173,7 @@
       "footer.legal": "Légal",
       "cookie.prefs": "Préférences cookies",
       "cmp.title": "Confidentialité et cookies",
-      "cmp.desc": "Nous respectons votre vie privée. Ce site n’utilise pas de cookies publicitaires ou de suivi. Seul un stockage technique minimal peut être utilisé pour la sécurité et les fonctionnalités essentielles (par exemple, préférences de langue).",
+      "cmp.desc": "Nous respectons votre vie privée. Ce site n'utilise pas de cookies publicitaires ou de suivi. Seul un stockage technique minimal peut être utilisé pour la sécurité et les fonctionnalités essentielles (par exemple, préférences de langue).",
       "cmp.necessary": "Techniques",
       "cmp.necessary.desc": "Sécurité & fonctionnalités essentielles (toujours actif).",
       "cmp.close": "Fermer"
@@ -1125,7 +1247,8 @@
       }
 
       function getLang(){
-        const saved = localStorage.getItem(storageKey);
+        let saved = null;
+        try { saved = localStorage.getItem(storageKey); } catch(_e){ }
         if (saved && I18N[saved]) return saved;
 
         const detected = detectBrowserLang();
@@ -1134,7 +1257,9 @@
         return DEFAULT_LANG;
       }
 
-      function setLang(lang){ localStorage.setItem(storageKey, lang); }
+      function setLang(lang){
+        try { localStorage.setItem(storageKey, lang); } catch(_e){ }
+      }
 
       const POOL_LATIN = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       const POOL_CYR   = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЭЮЯ0123456789";
@@ -1150,8 +1275,16 @@
         return POOL_LATIN;
       }
 
+      const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
       function scrambleSmart(el, finalText, durationMs, lang){
         const base = String(finalText ?? "");
+
+        if (prefersReducedMotion){
+          el.textContent = base;
+          return;
+        }
+
         const pool = poolForLang(lang);
         const isArabic = (lang === "ar");
 
@@ -1198,6 +1331,8 @@
           const switchEl = document.getElementById("lang-switch");
           switchEl?.classList.remove("is-open");
           switchEl?.classList.remove("open-right");
+          switchEl?.querySelector(".lang-trigger")?.setAttribute("aria-expanded", "false");
+          document.body.style.overflow = "";
 
           const railEl = document.getElementById("lang-rail");
           if (railEl){
@@ -1209,6 +1344,9 @@
           }
 
           const nodes = Array.from(document.querySelectorAll("[data-i18n]"));
+          const delay = prefersReducedMotion ? 0 : 160;
+          const fadeBack = prefersReducedMotion ? 0 : 220;
+
           nodes.forEach(el => el.classList.add("mx-i18n-out"));
 
           setTimeout(() => {
@@ -1231,8 +1369,8 @@
               gear.setAttribute("aria-label", tip);
             }
 
-            setTimeout(() => nodes.forEach(el => el.classList.remove("mx-i18n-in")), 220);
-          }, 160);
+            setTimeout(() => nodes.forEach(el => el.classList.remove("mx-i18n-in")), fadeBack);
+          }, delay);
 
         } finally {
           setTimeout(() => document.body.classList.remove("is-i18n-switching"), 260);
@@ -1267,11 +1405,7 @@
           startY = p.y;
           startScroll = rail.scrollLeft;
           dragging = false;
-
-          if (pressedBtn){
-            e.preventDefault();
-          }
-        }, { passive:false });
+        }, { passive:true });
 
         rail.addEventListener("touchmove", (e) => {
           if (!e.touches || e.touches.length === 0) return;
@@ -1326,6 +1460,17 @@
           e.stopPropagation();
         }, true);
 
+        rail.addEventListener("keydown", (e) => {
+          const btn = e.target && e.target.closest ? e.target.closest(".lang-pill") : null;
+          if (!btn) return;
+          if (e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            const lang = btn.getAttribute("data-lang") || DEFAULT_LANG;
+            setLang(lang);
+            window.__mxApplyLang(lang);
+          }
+        });
+
         if (!isTouch){
           let downX = 0, downY = 0;
           let pDragging = false;
@@ -1362,6 +1507,7 @@
     (function(){
       const switchEl = document.getElementById('lang-switch');
       const railEl   = document.getElementById('lang-rail');
+      const triggerEl = switchEl?.querySelector('.lang-trigger');
       if (!switchEl || !railEl) return;
 
       let openTimer = null;
@@ -1429,11 +1575,20 @@
         clampRailIntoViewport();
       }
 
+      function isMobileSheet(){
+        return window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+      }
+
       function openRail(){
         const y = window.scrollY || document.documentElement.scrollTop || 0;
         requestAnimationFrame(() => window.scrollTo(0, y));
 
         switchEl.classList.add('is-open');
+        triggerEl?.setAttribute('aria-expanded', 'true');
+
+        if (isMobileSheet()){
+          document.body.style.overflow = 'hidden';
+        }
 
         requestAnimationFrame(() => {
           ensureStartVisibleOnce();
@@ -1445,7 +1600,9 @@
         locked = false;
         switchEl.classList.remove('is-open');
         switchEl.classList.remove('open-right');
+        triggerEl?.setAttribute('aria-expanded', 'false');
         resetShift();
+        document.body.style.overflow = '';
       }
 
       function scheduleOpen(){
@@ -1456,6 +1613,12 @@
         clearTimers();
         closeTimer = setTimeout(() => closeRail(), CLOSE_DELAY_MS);
       }
+
+      switchEl.addEventListener('pointerdown', (e) => {
+        if (isMobileSheet() && e.target === switchEl && switchEl.classList.contains('is-open')){
+          closeRail();
+        }
+      });
 
       switchEl.addEventListener('pointerenter', () => {
         if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
@@ -1480,7 +1643,6 @@
         scheduleClose();
       });
 
-      const trigger = switchEl.querySelector('.lang-trigger');
       let _touchHandled = false;
 
       function toggleRail(){
@@ -1488,21 +1650,28 @@
         if (switchEl.classList.contains('is-open')) closeRail();
         else openRail();
 
-        trigger?.blur();
+        triggerEl?.blur();
         if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
       }
 
-      trigger?.addEventListener('touchstart', (e) => {
+      triggerEl?.addEventListener('touchstart', (e) => {
         _touchHandled = true;
         e.preventDefault();
         toggleRail();
         setTimeout(() => { _touchHandled = false; }, 450);
       }, { passive: false });
 
-      trigger?.addEventListener('click', (e) => {
+      triggerEl?.addEventListener('click', (e) => {
         if (_touchHandled) return;
         e.preventDefault();
         toggleRail();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && switchEl.classList.contains('is-open')){
+          closeRail();
+          triggerEl?.focus();
+        }
       });
 
       window.addEventListener('resize', () => {
@@ -1529,6 +1698,13 @@
         setOpen(!isOpen());
       });
 
+      v.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          setOpen(!isOpen());
+        }
+      });
+
       document.addEventListener('pointerdown', (e) => {
         if (!v.contains(e.target)) setOpen(false);
       });
@@ -1539,15 +1715,18 @@
     })();
 
     (function(){
-      // NOTA: Asegúrate de que estas URLs sean válidas o el video no cargará.
-      const BASE = 'https://www.microstudiox.com/assets/';
+      const BASE = '/assets/';
       const VIDEOS = [BASE+'video1.mp4', BASE+'video2.mp4', BASE+'video3.mp4', BASE+'video4.mp4'];
 
-      const LANES = [
-        { id: 'vl-left',   delay:    0 },
-        { id: 'vl-center', delay: 1200 }, // Reducido un poco para mayor fluidez inicial
-        { id: 'vl-right',  delay: 2400 }
-      ];
+      const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const isSmallScreen = window.matchMedia && window.matchMedia("(max-width: 640px)").matches;
+      const LANES = isSmallScreen
+        ? [{ id: 'vl-center', delay: 0 }]
+        : [
+            { id: 'vl-left',   delay:    0 },
+            { id: 'vl-center', delay: 1200 },
+            { id: 'vl-right',  delay: 2400 }
+          ];
 
       const laneVideo = { 'vl-left': -1, 'vl-center': -1, 'vl-right': -1 };
 
@@ -1570,24 +1749,23 @@
         if (!video) return;
 
         const src = pickVideo(laneId);
+        video.preload = 'auto';
         video.src = src;
         video.currentTime = 0;
 
-        if (Math.random() < 0.4) wrap.classList.add('is-expanded');
+        if (!prefersReducedMotion && Math.random() < 0.4) wrap.classList.add('is-expanded');
         else wrap.classList.remove('is-expanded');
 
         const p = video.play();
         if (p && p.catch) p.catch(() => {
-            // Manejo de error si el video no existe o el navegador bloquea autoplay
             console.warn("Video failed to play in " + laneId);
         });
-        
+
         wrap.classList.add('is-on');
 
         video.addEventListener('ended', function onEnd() {
           video.removeEventListener('ended', onEnd);
           wrap.classList.remove('is-on');
-          // No quitamos 'is-expanded' aquí para evitar un salto visual brusco al terminar
           setTimeout(() => runLane(laneId), randPause());
         });
       }
